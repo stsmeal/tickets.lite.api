@@ -1,0 +1,1 @@
+{"version":3,"file":"user-identity.js","sourceRoot":"","sources":["../../src/models/user-identity.ts"],"names":[],"mappings":";;AAAA,qCAAkD;AAOlD,IAAM,kBAAkB,GAAG,IAAI,iBAAM,CAAC;IAClC,QAAQ,EAAE,EAAC,IAAI,EAAE,MAAM,EAAC;IACxB,IAAI,EAAE,EAAC,IAAI,EAAE,MAAM,EAAC;CACvB,CAAC,CAAC;AAEH,IAAM,YAAY,GAAG,gBAAK,CAAgB,cAAc,EAAE,kBAAkB,EAAE,gBAAgB,CAAC,CAAC;AAEhG,kBAAe,YAAY,CAAC"}

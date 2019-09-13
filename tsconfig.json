@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "lib": [
+            "es6",
+            "dom"
+        ],
+        "outDir": "./build",
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "removeComments": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "moduleResolution": "node",
+        "noUnusedLocals": false,
+        "resolveJsonModule": true
+    },
+    "compileOnSave": true,
+    "exclude": [
+      "node_modules"
+    ]
+}
