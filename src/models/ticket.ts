@@ -3,7 +3,7 @@ import { Note } from './note';
 import { IUser } from './user';
 import { IAsset } from './asset';
 import AuditSchema, { IAudit } from './audit';
-import { ILaborCharge } from './labor-charge';
+import LaborCharge, { ILaborCharge } from './labor-charge';
 
 export interface ITicket extends IAudit, Document{
     number: number;
@@ -32,5 +32,6 @@ const TicketSchema = new Schema({
 TicketSchema.add(AuditSchema);
 
 const Ticket = model<ITicket>('Ticket', TicketSchema, 'Tickets');
+let ticket = new Ticket()
 
 export default Ticket;
