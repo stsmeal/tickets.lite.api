@@ -1,5 +1,0 @@
-{
-    "connectionString": "mongodb://localhost:27017",
-    "dbName": "CMSLite",
-    "secret": "chamberofsecrets"
-}

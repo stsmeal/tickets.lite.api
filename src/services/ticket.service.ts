@@ -7,6 +7,7 @@ import Asset, { IAsset } from '../models/asset';
 import UserIdentity, { IUserIdentity } from '../models/user-identity';
 import User, { IUser } from '../models/user';
 import Counter, { ICounter } from '../models/counter';
+import LaborCharge from '../models/labor-charge';
 
 
 @injectable()
@@ -14,7 +15,7 @@ export class TicketService {
     constructor(@inject(TYPES.MongoDBClient) private mongoClient: MongoDBClient) {}
 
     public async getTickets() {
-        return await Ticket.find({});
+        return await Ticket.find({}).populate('assets').populate('laborCharges').populate('assignments').populate('userCreated').populate('userUpdated');
     }
     
     public async getTicket(id: string){
@@ -32,10 +33,6 @@ export class TicketService {
                 ticket.number = counter.count;
                 await Counter.findOneAndUpdate({name: 'tickets'}, {count: counter.count});
             }
-        }
-        
-        if(ticket.userCreated){
-            ticket.userCreated = await User.findById(ticket.userCreated._id)
         }
 
         if(!ticket._id){

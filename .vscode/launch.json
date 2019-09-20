@@ -17,6 +17,7 @@
                 "port=3055"
             ],
             "cwd": "${workspaceRoot}",
+            "preLaunchTask": "tsc: build - tsconfig.json",
             "runtimeExecutable": null,
             "runtimeArgs": [
                 "--nolazy",

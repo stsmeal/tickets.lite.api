@@ -1,5 +1,6 @@
 import { Schema } from "mongoose";
 import { IUser } from "./user";
+import { next } from "inversify-express-utils";
 
 export class IAudit {
     userCreated: IUser;
