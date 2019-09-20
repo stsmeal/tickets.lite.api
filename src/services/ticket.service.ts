@@ -15,7 +15,7 @@ export class TicketService {
     constructor(@inject(TYPES.MongoDBClient) private mongoClient: MongoDBClient) {}
 
     public async getTickets() {
-        return await Ticket.find({}).populate('assets').populate('laborCharges').populate('assignments').populate('userCreated').populate('userUpdated');
+        return await Ticket.find({}).populate({path: 'assets', model: Asset}).populate({path: 'laborCharges', model: LaborCharge}).populate({path: 'assignments', model: User}).populate('userCreated').populate('userUpdated');
     }
     
     public async getTicket(id: string){
