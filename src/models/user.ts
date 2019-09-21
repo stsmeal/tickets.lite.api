@@ -24,6 +24,7 @@ export interface IUser extends Document{
     role: string;
     phone: string;
     theme: string;
+    deleted: boolean;
 }
 
 const UserSchema = new Schema({
@@ -35,10 +36,16 @@ const UserSchema = new Schema({
     dateCreated: {type: Date},
     role: {type: String},
     phone: {type: String},
-    theme: {type: String}
+    theme: {type: String},
+    deleted: {type: Schema.Types.Boolean, default: false }
+});
+
+UserSchema.pre('find', function(){
+    let user = this;
+    user.where({deleted: false});
 });
 
 const User = model<IUser>('User', UserSchema, 'Users');
-let user = new User();
+
 
 export default User;
