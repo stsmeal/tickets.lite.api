@@ -1,4 +1,4 @@
-import { controller, httpPost, httpGet, BaseHttpController } from 'inversify-express-utils';
+import { controller, httpPost, httpGet, BaseHttpController, httpDelete } from 'inversify-express-utils';
 import { Request } from 'express';
 import { inject } from 'inversify';
 import TYPES from '../constant/types';
@@ -23,5 +23,15 @@ export class TicketController extends BaseHttpController {
     public async saveTicket(request: Request) {
         let ticket = <ITicket>request.body;
         return await this.ticketService.saveTicket(ticket);
+    }
+
+    @httpDelete('/:id')
+    public async deleteTicket(request: Request){
+        let id = request.params.id;
+        if(!id){
+            return this.badRequest('Missing Id');
+        }
+
+        return await this.ticketService.deleteTicket(id);
     }
 }

@@ -12,9 +12,9 @@ export class UserService {
 
     public async authenticate(username: string, password: string) {
         username = username.toLowerCase();
-        let userIdentity = await UserIdentity.findOne({username: username}).exec();
+        let userIdentity = await UserIdentity.findOne({username: username});
         if(userIdentity && await compare(password, userIdentity.hash)) {
-            let user = await User.findOne({username: username}).exec();
+            let user = await User.findOne({username: username});
             const token = sign(JSON.stringify(user), config.secret);
             return await {user, token}; 
         } else {
@@ -23,12 +23,12 @@ export class UserService {
     }
 
     public async getAll() {
-        return await User.find({}).exec();
+        return await User.find({});
     }
 
     public async create(user: IUser, password: string) {
         user.username = user.username.toLowerCase();
-        if(await User.findOne({username: user.username}).exec()){
+        if(await User.findOne({username: user.username})){
             throw 'Username is Taken';
         }
 

@@ -42,4 +42,8 @@ export class TicketService {
             return await Ticket.findById(ticket._id);
         }
     }
+
+    public async deleteTicket(id: string){
+        return await Ticket.findByIdAndUpdate(id, {deleted: true});
+    }
 }
