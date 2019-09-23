@@ -7,7 +7,7 @@ export interface IUserIdentity extends Document{
 }
 
 const UserIdentitySchema = new Schema({
-    username: {type: String},
+    username: {type: String, unique: true, lowercase: true},
     hash: {type: String},
     deleted: {type: Schema.Types.Boolean, default: false }
 });

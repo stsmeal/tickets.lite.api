@@ -18,8 +18,7 @@ const LaborChargeSchema = new Schema({
     dateStarted: {type: Date},
     dateEnded: {type: Date},
     rate: {type: Number},
-    assignment: {type: Schema.Types.ObjectId, ref: 'User'},
-    assets: [{type: Schema.Types.ObjectId, ref: 'Asset'}]
+    assignment: {type: Schema.Types.ObjectId, ref: 'User'}
 });
 
 LaborChargeSchema.add(AuditSchema);
