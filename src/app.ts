@@ -14,10 +14,12 @@ import TYPES from './constant/types';
 
 import './controllers/user.controller';
 import './controllers/ticket.controller';
+import './controllers/inventory.controller';
 import './utils/mongodb/client';
 
 import { UserService } from './services/user.service';
 import { TicketService } from './services/ticket.service';
+import { InventoryService } from './services/inventory.service';
 
 // set up container
 let container = new Container();
@@ -27,6 +29,7 @@ mongoose.connect(config.connectionString + '/' + config.dbName, { useNewUrlParse
 container.bind<MongoDBClient>(TYPES.MongoDBClient).to(MongoDBClient);
 container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<TicketService>(TYPES.TicketService).to(TicketService);
+container.bind<InventoryService>(TYPES.InventoryService).to(InventoryService);
 
 //create server 
 let server = new InversifyExpressServer(container);
