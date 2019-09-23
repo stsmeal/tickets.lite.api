@@ -7,7 +7,7 @@ import Asset, { IAsset } from '../models/asset';
 import UserIdentity, { IUserIdentity } from '../models/user-identity';
 import User, { IUser } from '../models/user';
 import Counter, { ICounter } from '../models/counter';
-import LaborCharge from '../models/labor-charge';
+import LaborCharge, { ILaborCharge } from '../models/labor-charge';
 
 
 @injectable()
@@ -15,11 +15,11 @@ export class TicketService {
     constructor(@inject(TYPES.MongoDBClient) private mongoClient: MongoDBClient) {}
 
     public async getTickets() {
-        return await Ticket.find({}).populate({path: 'assets', model: Asset}).populate({path: 'laborCharges', model: LaborCharge}).populate({path: 'assignments', model: User}).populate('userCreated').populate('userUpdated');
+        return await Ticket.find({}).populate({path: 'assets', model: Asset}).populate({path: 'assignments', model: User}).populate('userCreated').populate('userUpdated');
     }
     
     public async getTicket(id: string){
-        return await Ticket.findById(id).populate({path: 'assets', model: Asset}).populate({path: 'laborCharges', model: LaborCharge}).populate({path: 'assignments', model: User}).populate('userCreated').populate('userUpdated');
+        return await Ticket.findById(id).populate({path: 'assets', model: Asset}).populate({path: 'laborCharges', model: LaborCharge, populate: {path: 'assignment', model: User}}).populate({path: 'assignments', model: User}).populate('userCreated').populate('userUpdated');
     }
 
     public async saveTicket(ticket: ITicket){
@@ -35,11 +35,33 @@ export class TicketService {
             }
         }
 
+        //handle labor charges
+        if(ticket.laborCharges && ticket.laborCharges.length){
+            for(let i = 0; i < ticket.laborCharges.length; i++){
+                if(!ticket.laborCharges[i]._id){
+                    ticket.laborCharges[i] = await LaborCharge.create(ticket.laborCharges[i]);
+                } else {
+                    await LaborCharge.findByIdAndUpdate(ticket.laborCharges[i]._id, ticket.laborCharges[i]);
+                    ticket.laborCharges[i] = await LaborCharge.findById(ticket.laborCharges[i]._id);
+                }
+            } 
+        }
+        
+        //delete old labor charges
+        if(ticket._id){
+            let oldLaborCharges = (await Ticket.findById(ticket._id).select('laborCharges')).laborCharges
+            .map(lc => lc._id)
+            .filter(id => ticket.laborCharges.findIndex(lc => lc._id == id) == -1);
+            
+            if(oldLaborCharges.length)
+                await LaborCharge.find({_id: {$in: oldLaborCharges}}).update({deleted: true});
+        }
+
         if(!ticket._id){
             return await Ticket.create(ticket);
         } else {
             await Ticket.findByIdAndUpdate(ticket._id, ticket);
-            return await Ticket.findById(ticket._id);
+            return await Ticket.findById(ticket._id).populate({path: 'assets', model: Asset}).populate({path: 'laborCharges', model: LaborCharge, populate: {path: 'assignment', model: User}}).populate({path: 'assignments', model: User}).populate('userCreated').populate('userUpdated');
         }
     }
 
