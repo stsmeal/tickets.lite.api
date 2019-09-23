@@ -19,7 +19,7 @@ export class TicketService {
     }
     
     public async getTicket(id: string){
-        return await Ticket.findById(id);
+        return await Ticket.findById(id).populate({path: 'assets', model: Asset}).populate({path: 'laborCharges', model: LaborCharge}).populate({path: 'assignments', model: User}).populate('userCreated').populate('userUpdated');
     }
 
     public async saveTicket(ticket: ITicket){

@@ -69,4 +69,11 @@ export class UserController extends BaseHttpController {
             return this.internalServerError(error);
         }
     }
+
+    @httpPost('/quicksearch')
+    public async quickSearch(request: Request){
+        let searchText = request.body.searchText;
+
+        return await this.userService.quickSearch(searchText);
+    }
 }
