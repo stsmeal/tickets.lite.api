@@ -39,4 +39,18 @@ export class UserService {
         
         return await User.create(user);       
     }
+
+    public async quickSearch(searchText: string){
+        let aggregate = (await User.aggregate([{
+            $project: { fullname: { $concat: ["$lastname", ", ", "$firstname"]}}
+        },{
+            $match: { fullname: new RegExp(`^${searchText}`, 'i')}
+        }]).limit(25)).map(u => u._id);
+
+        let users = await User.find({_id: {$in: aggregate}}).sort({lastname: 1, firstname: 1});
+
+        console.log(users);
+
+        return await users;
+    }
 }
