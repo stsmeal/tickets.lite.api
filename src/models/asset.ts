@@ -17,6 +17,11 @@ export interface IAsset extends IAudit, Document {
     description: string;
     status: number;
     category: number;
+    lifeExpectancy: number;
+    lifeExpectancyScale: number;
+    installDate: Date;
+    condition: number;
+    retiredDate: Date;
 }
 
 const AssetSchema = new Schema({
@@ -24,7 +29,12 @@ const AssetSchema = new Schema({
     status: {type: Number},
     category: {type: Number},
     description: {type: Schema.Types.String},
-    notes: [{type: Object}]
+    notes: [{type: Object}],
+    lifeExpectancy: {type: Number},
+    lifeExpectancyScale: {type: Number},
+    installDate: {type: Date},
+    condition: {type: Number},
+    retiredDate: {type: Date}
 });
 
 AssetSchema.add(AuditSchema);
