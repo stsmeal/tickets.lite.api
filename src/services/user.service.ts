@@ -4,6 +4,8 @@ import { compare, hash } from 'bcryptjs';
 import UserIdentity, { IUserIdentity } from '../models/user-identity';
 import User, { IUser } from '../models/user';
 import * as config from '../config.json';
+import LaborCharge from '../models/labor-charge';
+import Ticket from '../models/ticket';
 
 
 @injectable()
@@ -71,11 +73,19 @@ export class UserService {
         let aggregate = (await User.aggregate([{
             $project: { fullname: { $concat: ["$lastname", ", ", "$firstname"]}}
         },{
-            $match: { fullname: new RegExp(`^${searchText}`, 'i')}
+            $match: { fullname: new RegExp(`${searchText}`, 'i')}
         }]).limit(25)).map(u => u._id);
 
         let users = await User.find({_id: {$in: aggregate}}).sort({lastname: 1, firstname: 1});
 
         return await users;
+    }
+
+    public async getLaborCharges(userId: string){
+        return await LaborCharge.find({assignment: userId}).sort({dateCreated: -1});
+    }
+    
+    public async getTickets(userId: string){
+        return await Ticket.find({assignments: { $all: [userId]}}).sort({dateCreated: -1});
     }
 }
