@@ -34,4 +34,11 @@ export class InventoryController extends BaseHttpController {
 
         return await this.inventoryService.deleteAsset(id);
     }
+
+    @httpPost('/quicksearch')
+    public async quickSearch(request: Request){
+        let searchText = request.body.searchText;
+
+        return await this.inventoryService.quickSearch(searchText);
+    }
 }

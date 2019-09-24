@@ -44,4 +44,16 @@ export class InventoryService {
     public async deleteAsset(id: string){
         return await Asset.findByIdAndUpdate(id, {deleted: true});
     }
+
+    public async quickSearch(searchText: string){
+        let aggregate = (await Asset.aggregate([{
+            $project: { fullname: { $concat: ["$number", " - ", "$description"]}}
+        },{
+            $match: { fullname: new RegExp(`^${searchText}`, 'i')}
+        }]).limit(25)).map(a => a._id);
+
+        let assets = await Asset.find({_id: {$in: aggregate}}).sort({number: 1, description: 1});
+
+        return await assets;
+    }
 }
