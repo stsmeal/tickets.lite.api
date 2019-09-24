@@ -19,6 +19,16 @@ export class UserController extends BaseHttpController {
     public async getUser(request: Request){
         return await this.userService.get(request.params.id);
     }
+    
+    @httpGet('/laborcharges/:id')
+    public async getLaborCharges(request: Request){
+        return await this.userService.getLaborCharges(request.params.id);
+    }
+    
+    @httpGet('/tickets/:id')
+    public async getTickets(request: Request){
+        return await this.userService.getTickets(request.params.id);
+    }
 
     @httpPost('/authenticate')
     public async authenticate(request: Request){
@@ -107,15 +117,15 @@ export class UserController extends BaseHttpController {
         }
     }
 
-    @httpDelete('/:id')
-    public async delete(request: Request){
-        return await this.userService.delete(request.params.id);
-    }
-
     @httpPost('/quicksearch')
     public async quickSearch(request: Request){
         let searchText = request.body.searchText;
 
         return await this.userService.quickSearch(searchText);
+    }
+
+    @httpDelete('/:id')
+    public async delete(request: Request){
+        return await this.userService.delete(request.params.id);
     }
 }
