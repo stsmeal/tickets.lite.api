@@ -12,7 +12,6 @@ export class User{
 }
 */
 import {Schema, Document, model } from 'mongoose';
-import { ObjectID } from 'bson';
 
 export interface IUser extends Document{
     username: string;
@@ -20,6 +19,8 @@ export interface IUser extends Document{
     middlename: string;
     lastname: string;
     email: string;
+    status: number;
+    trade: number;
     dateCreated: Date;
     role: string;
     phone: string;
@@ -33,6 +34,8 @@ const UserSchema = new Schema({
     middlename: {type: String},
     lastname: {type: String},
     email: {type: String},
+    status: {type: Number},
+    trade: {type: Number},
     dateCreated: {type: Date},
     role: {type: String},
     phone: {type: String},

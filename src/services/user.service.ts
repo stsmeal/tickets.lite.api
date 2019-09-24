@@ -26,6 +26,10 @@ export class UserService {
         return await User.find({});
     }
 
+    public async get(id: string) {
+        return await User.findById(id);
+    }
+
     public async create(user: IUser, password: string) {
         user.username = user.username.toLowerCase();
         if(await User.findOne({username: user.username})){
@@ -40,6 +44,29 @@ export class UserService {
         return await User.create(user);       
     }
 
+    public async update(user: IUser) {
+        let oldUser = await User.findById(user._id);
+        let userIdentity = await UserIdentity.findOne({username: oldUser.username});
+
+        if(userIdentity.username != user.username.toLowerCase()){
+            userIdentity.username = user.username;
+            await UserIdentity.findByIdAndUpdate(userIdentity._id, userIdentity);;
+        }
+
+        await User.findByIdAndUpdate(user._id, user);
+        return await User.findById(user._id);
+    }
+    
+    public async delete(id: string) {
+        let user =  await User.findById(id);
+        let userIdentity = await UserIdentity.findOne({username: user.username});
+        user.deleted = true;
+        userIdentity.deleted = true;
+        await UserIdentity.findByIdAndUpdate(userIdentity._id, userIdentity);;
+
+        return await User.findByIdAndUpdate(user._id, user);;
+    }
+
     public async quickSearch(searchText: string){
         let aggregate = (await User.aggregate([{
             $project: { fullname: { $concat: ["$lastname", ", ", "$firstname"]}}
@@ -48,8 +75,6 @@ export class UserService {
         }]).limit(25)).map(u => u._id);
 
         let users = await User.find({_id: {$in: aggregate}}).sort({lastname: 1, firstname: 1});
-
-        console.log(users);
 
         return await users;
     }
