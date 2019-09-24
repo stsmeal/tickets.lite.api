@@ -1,4 +1,4 @@
-import { controller, httpPost, httpGet, BaseHttpController } from 'inversify-express-utils';
+import { controller, httpPost, httpGet, BaseHttpController, httpDelete } from 'inversify-express-utils';
 import { Request, Response } from 'express';
 import { inject } from 'inversify';
 import TYPES from '../constant/types';
@@ -13,6 +13,11 @@ export class UserController extends BaseHttpController {
     @httpGet('/')
     public async getUsers(){
         return await this.userService.getAll();
+    }
+
+    @httpGet('/:id')
+    public async getUser(request: Request){
+        return await this.userService.get(request.params.id);
     }
 
     @httpPost('/authenticate')
@@ -68,6 +73,43 @@ export class UserController extends BaseHttpController {
         } catch(error) {
             return this.internalServerError(error);
         }
+    }
+    
+    @httpPost('')
+    public async update(request: Request){
+        const user = <IUser>request.body;
+
+        if(!user){
+            return this.badRequest('Missing User Information');
+        }
+
+        if(!user.username){
+            return this.badRequest('Missing Username');
+        }
+
+        if(!user.firstname){
+            return this.badRequest('Missing First Name');
+        }
+
+        if(!user.lastname){
+            return this.badRequest('Missing Last Name');
+        }
+
+        if(!user.email){
+            return this.badRequest('Missing Email');
+        }
+
+
+        try{
+            return await this.userService.update(user);
+        } catch(error) {
+            return this.internalServerError(error);
+        }
+    }
+
+    @httpDelete('/:id')
+    public async delete(request: Request){
+        return await this.userService.delete(request.params.id);
     }
 
     @httpPost('/quicksearch')
