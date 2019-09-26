@@ -3,7 +3,7 @@ import { Request } from 'express';
 import { inject } from 'inversify';
 import TYPES from '../constant/types';
 import { TicketService } from '../services/ticket.service';
-import { ITicket } from '../models/ticket';
+import { Ticket } from '../models/ticket';
 
 @controller('/ticket')
 export class TicketController extends BaseHttpController {
@@ -21,7 +21,7 @@ export class TicketController extends BaseHttpController {
 
     @httpPost('/')
     public async saveTicket(request: Request) {
-        let ticket = <ITicket>request.body;
+        let ticket = <Ticket>request.body;
         return await this.ticketService.saveTicket(ticket);
     }
 

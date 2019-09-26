@@ -10,9 +10,9 @@ export class Asset extends Audit {
 */
 
 import {Schema, Document, model} from 'mongoose';
-import AuditSchema, { IAudit } from './audit';
+import AuditSchema, { Audit } from './audit';
 
-export interface IAsset extends IAudit, Document {
+export interface Asset extends Audit, Document {
     number: string;
     description: string;
     status: number;

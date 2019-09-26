@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { inject } from 'inversify';
 import TYPES from '../constant/types';
 import { UserService } from '../services/user.service';
-import { IUser } from '../models/user';
+import { User } from '../models/user';
 
 @controller('/user')
 export class UserController extends BaseHttpController {
@@ -33,7 +33,7 @@ export class UserController extends BaseHttpController {
     @httpPost('/register')
     public async register(request: Request){
         const { password, ..._user } = request.body;
-        const user = <IUser>{..._user};
+        const user = <User>{..._user};
 
         if(!password){
             return this.badRequest('Missing Password');
@@ -75,7 +75,7 @@ export class UserController extends BaseHttpController {
     
     @httpPost('')
     public async update(request: Request){
-        const user = <IUser>request.body;
+        const user = <User>request.body;
 
         if(!user){
             return this.badRequest('Missing User Information');

@@ -1,6 +1,6 @@
 import {Schema, Document, model } from 'mongoose';
 
-export interface IUserIdentity extends Document{
+export interface UserIdentity extends Document{
     username: string;
     hash: string;
     deleted: boolean;

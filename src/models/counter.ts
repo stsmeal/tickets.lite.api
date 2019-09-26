@@ -1,6 +1,6 @@
 import {Schema, Document, model } from 'mongoose';
 
-export interface ICounter extends Document {
+export interface Counter extends Document {
     name: string;
     count: number;
 }

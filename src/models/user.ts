@@ -13,7 +13,7 @@ export class User{
 */
 import {Schema, Document, model } from 'mongoose';
 
-export interface IUser extends Document{
+export interface User extends Document{
     username: string;
     site: string;
     firstname: string;

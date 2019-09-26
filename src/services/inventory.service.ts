@@ -1,13 +1,13 @@
 import { injectable, inject } from 'inversify';
 import TYPES from '../constant/types';
 import { MongoDBClient } from '../utils/mongodb/client';
-import Ticket, { ITicket } from '../models/ticket';
+import Ticket, { Ticket } from '../models/ticket';
 import { Note } from '../models/note';
-import Asset, { IAsset } from '../models/asset';
-import UserIdentity, { IUserIdentity } from '../models/user-identity';
-import User, { IUser } from '../models/user';
-import Counter, { ICounter } from '../models/counter';
-import LaborCharge, { ILaborCharge } from '../models/labor-charge';
+import Asset, { Asset } from '../models/asset';
+import UserIdentity, { UserIdentity } from '../models/user-identity';
+import User, { User } from '../models/user';
+import Counter, { Counter } from '../models/counter';
+import LaborCharge, { LaborCharge } from '../models/labor-charge';
 import { Context } from '../context/context';
 
 
@@ -22,9 +22,9 @@ export class InventoryService {
         return await this.context.Asset.findById(id).populate({path: 'assets', model: this.context.Asset}).populate({path: 'laborCharges', model: this.context.LaborCharge, populate: {path: 'assignment', model: this.context.User}}).populate({path: 'assignments', model: this.context.User}).populate('userCreated').populate('userUpdated');
     }
 
-    public async saveAsset(asset: IAsset){
+    public async saveAsset(asset: Asset){
         if(!asset._id && !asset.number){
-            let counter: ICounter = await this.context.Counter.findOne({name: 'inventory'});
+            let counter: Counter = await this.context.Counter.findOne({name: 'inventory'});
             if(!counter){
                 asset.number = "1";
                 await this.context.Counter.create({name: 'inventory', count: 1});

@@ -2,7 +2,7 @@ import { controller, httpPost, httpGet, BaseHttpController, httpDelete } from 'i
 import { Request } from 'express';
 import { inject } from 'inversify';
 import { InventoryService } from '../services/inventory.service';
-import { IAsset } from '../models/asset';
+import { Asset } from '../models/asset';
 import TYPES from '../constant/types';
 
 @controller('/inventory')
@@ -21,7 +21,7 @@ export class InventoryController extends BaseHttpController {
 
     @httpPost('/')
     public async saveAsset(request: Request) {
-        let asset = <IAsset>request.body;
+        let asset = <Asset>request.body;
         return await this.inventoryService.saveAsset(asset);
     }
 

@@ -1,11 +1,11 @@
 import { Schema } from "mongoose";
-import { IUser } from "./user";
+import { User } from "./user";
 import { next } from "inversify-express-utils";
 
-export class IAudit {
-    userCreated: IUser;
+export class Audit {
+    userCreated: User;
     dateCreated: Date;
-    userUpdated: IUser;
+    userUpdated: User;
     dateUpdated: Date;
     deleted: boolean;
 }

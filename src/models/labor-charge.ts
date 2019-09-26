@@ -1,15 +1,15 @@
 import {Schema, Document, model } from 'mongoose';
-import { IUser } from './user';
-import AuditSchema, { IAudit } from './audit';
+import { User } from './user';
+import AuditSchema, { Audit } from './audit';
 
-export interface ILaborCharge extends IAudit, Document{
+export interface LaborCharge extends Audit, Document{
     number: number;
     description: string;
     type: number;
     dateStarted: Date;
     dateEnded: Date;
     rate: number;
-    assignment: IUser;
+    assignment: User;
 }
 
 const LaborChargeSchema = new Schema({
