@@ -1,15 +1,4 @@
-/*
-import { Audit } from "./audit";
-import { Note } from "./note";
-
-export class Asset extends Audit {
-    number: string;
-    description: string;
-    notes: Note[];
-}
-*/
-
-import {Schema, Document, model} from 'mongoose';
+import {Schema, Document } from 'mongoose';
 import AuditSchema, { Audit } from './audit';
 
 export interface Asset extends Audit, Document {

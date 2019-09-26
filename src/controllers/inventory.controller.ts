@@ -1,9 +1,9 @@
 import { controller, httpPost, httpGet, BaseHttpController, httpDelete } from 'inversify-express-utils';
 import { Request } from 'express';
 import { inject } from 'inversify';
+import TYPES from '../constant/types';
 import { InventoryService } from '../services/inventory.service';
 import { Asset } from '../models/asset';
-import TYPES from '../constant/types';
 
 @controller('/inventory')
 export class InventoryController extends BaseHttpController {

@@ -1,9 +1,9 @@
 import { injectable, inject } from 'inversify';
+import TYPES from '../constant/types';
 import { hash } from 'bcryptjs';
 import { UserIdentity } from '../models/user-identity';
 import { User } from '../models/user';
 import { Context } from '../context/context';
-import TYPES from '../constant/types';
 
 
 @injectable()

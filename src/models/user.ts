@@ -11,7 +11,7 @@ export class User{
     theme: string;
 }
 */
-import {Schema, Document, model } from 'mongoose';
+import {Schema, Document } from 'mongoose';
 
 export interface User extends Document{
     username: string;
