@@ -1,38 +1,51 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
-import { InversifyExpressServer } from 'inversify-express-utils';
+import { InversifyExpressServer, interfaces, TYPE } from 'inversify-express-utils';
 import { jwt } from './utils/authentication/authentication';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 
-import { MongoDBClient } from './utils/mongodb/client';
 import * as mongoose from 'mongoose';
 import * as compression from 'compression';
 import * as config from './config.json';
 
 import TYPES from './constant/types';
 
+import './controllers/auth.controller';
 import './controllers/user.controller';
 import './controllers/ticket.controller';
 import './controllers/inventory.controller';
 import './utils/mongodb/client';
 
+import { AuthService } from './services/auth.service';
 import { UserService } from './services/user.service';
 import { TicketService } from './services/ticket.service';
 import { InventoryService } from './services/inventory.service';
+import { Context } from './context/context';
+import { AuthProvider } from './utils/authentication/auth-provider';
 
 // set up container
 let container = new Container();
 
 mongoose.connect(config.connectionString + '/' + config.dbName, { useNewUrlParser: true});
 //set up bindings
-container.bind<MongoDBClient>(TYPES.MongoDBClient).to(MongoDBClient);
+container.bind<AuthService>(TYPES.AuthService).to(AuthService);
 container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<TicketService>(TYPES.TicketService).to(TicketService);
 container.bind<InventoryService>(TYPES.InventoryService).to(InventoryService);
 
+container.bind<Context>(TYPES.Context).toDynamicValue((ctx) => {
+  const httpContext = ctx.container.get<interfaces.HttpContext>(TYPE.HttpContext);
+  let context = new Context();
+  if(httpContext && httpContext.user && httpContext.user.details){
+    context.setSite(httpContext.user.details.site.toLowerCase());
+  }
+  
+  return context;
+}).inRequestScope();
+
 //create server 
-let server = new InversifyExpressServer(container);
+let server = new InversifyExpressServer(container, null, null, null, AuthProvider);
 server.setConfig((app) => {
   app.use(cors());
   //add body parser

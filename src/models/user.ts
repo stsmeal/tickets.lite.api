@@ -15,6 +15,7 @@ import {Schema, Document, model } from 'mongoose';
 
 export interface IUser extends Document{
     username: string;
+    site: string;
     firstname: string;
     middlename: string;
     lastname: string;
@@ -30,6 +31,7 @@ export interface IUser extends Document{
 
 const UserSchema = new Schema({
     username: {type: String, unique: true, lowercase: true},
+    site: {type: String, required: true, lowercase: true },
     firstname: {type: String},
     middlename: {type: String},
     lastname: {type: String},
@@ -48,7 +50,7 @@ UserSchema.pre('find', function(){
     user.where({deleted: false});
 });
 
-const User = model<IUser>('User', UserSchema, 'Users');
+export default UserSchema;
 
 
-export default User;
+

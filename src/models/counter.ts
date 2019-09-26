@@ -10,7 +10,4 @@ const CounterSchema = new Schema({
     count: {type: Number }
 });
 
-
-const Counter = model<ICounter>('Counter', CounterSchema, 'Counters');
-
-export default Counter;
+export default CounterSchema;

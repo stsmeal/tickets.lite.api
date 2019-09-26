@@ -22,6 +22,4 @@ UserIdentitySchema.pre('findOne', function(){
     userIdentity.where({deleted: false});
 });
 
-const UserIdentity = model<IUserIdentity>('UserIdentity', UserIdentitySchema, 'UserIdentities');
-
-export default UserIdentity;
+export default UserIdentitySchema;
