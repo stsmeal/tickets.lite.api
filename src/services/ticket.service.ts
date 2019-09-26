@@ -1,13 +1,13 @@
 import { injectable, inject } from 'inversify';
 import TYPES from '../constant/types';
 import { MongoDBClient } from '../utils/mongodb/client';
-import Ticket, { ITicket } from '../models/ticket';
+import Ticket, { Ticket } from '../models/ticket';
 import { Note } from '../models/note';
-import Asset, { IAsset } from '../models/asset';
-import UserIdentity, { IUserIdentity } from '../models/user-identity';
-import User, { IUser } from '../models/user';
-import Counter, { ICounter } from '../models/counter';
-import LaborCharge, { ILaborCharge } from '../models/labor-charge';
+import Asset, { Asset } from '../models/asset';
+import UserIdentity, { UserIdentity } from '../models/user-identity';
+import User, { User } from '../models/user';
+import Counter, { Counter } from '../models/counter';
+import LaborCharge, { LaborCharge } from '../models/labor-charge';
 import { Context } from '../context/context';
 import AssetSchema from '../models/asset';
 
@@ -24,9 +24,9 @@ export class TicketService {
         return await this.context.Ticket.findById(id).populate({path: 'assets', model: this.context.Asset}).populate({path: 'laborCharges', model: this.context.LaborCharge, populate: {path: 'assignment', model: this.context.User}}).populate({path: 'assignments', model: this.context.User}).populate('userCreated').populate('userUpdated');
     }
 
-    public async saveTicket(ticket: ITicket){
+    public async saveTicket(ticket: Ticket){
         if(!ticket._id || !ticket.number){
-            let counter: ICounter = await this.context.Counter.findOne({name: 'tickets'}).exec();
+            let counter: Counter = await this.context.Counter.findOne({name: 'tickets'}).exec();
             if(!counter){
                 ticket.number = 1;
                 await this.context.Counter.create({name: 'tickets', count: 1});

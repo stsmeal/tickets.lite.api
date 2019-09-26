@@ -1,6 +1,6 @@
-import { IAudit } from "./audit";
+import { Audit } from "./audit";
 
-export class Note extends IAudit {
+export class Note extends Audit {
     type: number;
     message: string;
 }

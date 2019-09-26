@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
 import { hash } from 'bcryptjs';
-import { IUserIdentity } from '../models/user-identity';
-import { IUser } from '../models/user';
+import { UserIdentity } from '../models/user-identity';
+import { User } from '../models/user';
 import { Context } from '../context/context';
 import TYPES from '../constant/types';
 
@@ -18,13 +18,13 @@ export class UserService {
         return await this.context.User.findById(id);
     }
 
-    public async create(user: IUser, password: string) {
+    public async create(user: User, password: string) {
         user.username = user.username.toLowerCase();
         if(await this.context.User.findOne({username: user.username})){
             throw 'Username is Taken';
         }
 
-        await this.context.UserIdentity.create(<IUserIdentity>{
+        await this.context.UserIdentity.create(<UserIdentity>{
             username: user.username,
             hash: await hash(password, 10)
         });
@@ -32,7 +32,7 @@ export class UserService {
         return await this.context.User.create(user);       
     }
 
-    public async update(user: IUser) {
+    public async update(user: User) {
         let oldUser = await this.context.User.findById(user._id);
         let userIdentity = await this.context.UserIdentity.findOne({username: oldUser.username});
 

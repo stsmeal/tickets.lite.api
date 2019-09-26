@@ -1,8 +1,8 @@
 import { injectable, inject } from 'inversify';
 import { sign } from 'jsonwebtoken';
 import { compare, hash } from 'bcryptjs';
-import { IUserIdentity } from '../models/user-identity';
-import { IUser } from '../models/user';
+import { UserIdentity } from '../models/user-identity';
+import { User } from '../models/user';
 import * as config from '../config.json';
 import { Context } from '../context/context';
 import TYPES from '../constant/types';
@@ -25,14 +25,14 @@ export class AuthService {
         }
     }
 
-    public async create(user: IUser, password: string) {
+    public async create(user: User, password: string) {
         this.context.setSite(user.site);
         user.username = user.username.toLowerCase();
         if(await this.context.User.findOne({username: user.username})){
             throw 'Username is Taken';
         }
 
-        await this.context.UserIdentity.create(<IUserIdentity>{
+        await this.context.UserIdentity.create(<UserIdentity>{
             username: user.username,
             hash: await hash(password, 10)
         });

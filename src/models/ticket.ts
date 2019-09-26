@@ -1,20 +1,20 @@
 import {Schema, Document, model } from 'mongoose';
 import { Note } from './note';
-import { IUser } from './user';
-import { IAsset } from './asset';
-import AuditSchema, { IAudit } from './audit';
-import LaborCharge, { ILaborCharge } from './labor-charge';
+import { User } from './user';
+import { Asset } from './asset';
+import AuditSchema, { Audit } from './audit';
+import { LaborCharge } from './labor-charge';
 
-export interface ITicket extends IAudit, Document{
+export interface Ticket extends Audit, Document{
     number: number;
     description: string;
     status: number;
     category: number;
     dateCompleted: Date;
     notes: Note[];
-    laborCharges: ILaborCharge[];
-    assignments: IUser[];
-    assets: IAsset[];
+    laborCharges: LaborCharge[];
+    assignments: User[];
+    assets: Asset[];
 }
 
 const TicketSchema = new Schema({

@@ -2,7 +2,7 @@ import { controller, httpPost, httpGet, BaseHttpController, httpDelete } from 'i
 import { Request, Response } from 'express';
 import { inject } from 'inversify';
 import TYPES from '../constant/types';
-import { IUser } from '../models/user';
+import { User } from '../models/user';
 import { AuthService } from '../services/auth.service';
 
 @controller('/auth')
@@ -35,7 +35,7 @@ export class AuthController extends BaseHttpController {
     @httpPost('/register')
     public async register(request: Request){
         const { password, ..._user } = request.body;
-        const user = <IUser>{..._user};
+        const user = <User>{..._user};
 
         if(!password){
             return this.badRequest('Missing Password');
