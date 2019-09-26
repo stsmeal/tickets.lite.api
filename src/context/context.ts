@@ -26,11 +26,11 @@ export class Context {
     }
 
     private setModels(): void {
-        this.User = this.connection.model<User>('User', UserSchema, 'Users');
-        this.UserIdentity = this.connection.model<UserIdentity>("UserIdentity", UserIdentitySchema, "UserIdentities");
-        this.Ticket = this.connection.model<Ticket>('Ticket', TicketSchema, 'Tickets');
-        this.LaborCharge = this.connection.model<LaborCharge>('LaborCharge', LaborChargeSchema, 'LaborCharges');
-        this.Counter = this.connection.model<Counter>('Counter', CounterSchema, 'Counters');
-        this.Asset = this.connection.model<Asset>('Asset', AssetSchema, 'Inventory');
+        this.User = this.connection.model<User>('User', UserSchema, 'users');
+        this.UserIdentity = this.connection.model<UserIdentity>("UserIdentity", UserIdentitySchema, "userIdentities");
+        this.Ticket = this.connection.model<Ticket>('Ticket', TicketSchema, 'tickets');
+        this.LaborCharge = this.connection.model<LaborCharge>('LaborCharge', LaborChargeSchema, 'laborCharges');
+        this.Counter = this.connection.model<Counter>('Counter', CounterSchema, 'counters');
+        this.Asset = this.connection.model<Asset>('Asset', AssetSchema, 'inventory');
     }
 }
