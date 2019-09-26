@@ -23,6 +23,4 @@ const LaborChargeSchema = new Schema({
 
 LaborChargeSchema.add(AuditSchema);
 
-const LaborCharge = model<ILaborCharge>('LaborCharge', LaborChargeSchema, 'LaborCharges');
-
-export default LaborCharge;
+export default LaborChargeSchema;

@@ -31,7 +31,4 @@ const TicketSchema = new Schema({
 
 TicketSchema.add(AuditSchema);
 
-const Ticket = model<ITicket>('Ticket', TicketSchema, 'Tickets');
-let ticket = new Ticket()
-
-export default Ticket;
+export default TicketSchema;

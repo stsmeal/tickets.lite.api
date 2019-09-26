@@ -30,24 +30,6 @@ export class UserController extends BaseHttpController {
         return await this.userService.getTickets(request.params.id);
     }
 
-    @httpPost('/authenticate')
-    public async authenticate(request: Request){
-        const { username, password } = request.body;
-        
-        if(!username){
-            return this.badRequest('Missing Username');
-        }
-        if(!password){
-            return this.badRequest('Missing Password');
-        }
-
-        try{
-            return await this.userService.authenticate(username, password);
-        } catch(error) {
-            return this.internalServerError(error);
-        }
-    }
-
     @httpPost('/register')
     public async register(request: Request){
         const { password, ..._user } = request.body;
@@ -76,6 +58,12 @@ export class UserController extends BaseHttpController {
         if(!user.email){
             return this.badRequest('Missing Email');
         }
+
+        if(!request.headers.site){
+            return this.badRequest('Missing Workplace');
+        }
+
+        user.site = request.headers.site.toString();
 
 
         try{

@@ -39,6 +39,4 @@ const AssetSchema = new Schema({
 
 AssetSchema.add(AuditSchema);
 
-const Asset = model<IAsset>('Asset', AssetSchema, 'Inventory');
-
-export default Asset;
+export default AssetSchema;
