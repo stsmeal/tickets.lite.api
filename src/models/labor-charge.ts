@@ -1,4 +1,4 @@
-import {Schema, Document, model } from 'mongoose';
+import {Schema, Document } from 'mongoose';
 import { User } from './user';
 import AuditSchema, { Audit } from './audit';
 

@@ -1,15 +1,8 @@
 import { injectable, inject } from 'inversify';
 import TYPES from '../constant/types';
-import { MongoDBClient } from '../utils/mongodb/client';
-import Ticket, { Ticket } from '../models/ticket';
-import { Note } from '../models/note';
-import Asset, { Asset } from '../models/asset';
-import UserIdentity, { UserIdentity } from '../models/user-identity';
-import User, { User } from '../models/user';
-import Counter, { Counter } from '../models/counter';
-import LaborCharge, { LaborCharge } from '../models/labor-charge';
+import { Ticket } from '../models/ticket';
+import { Counter } from '../models/counter';
 import { Context } from '../context/context';
-import AssetSchema from '../models/asset';
 
 
 @injectable()
