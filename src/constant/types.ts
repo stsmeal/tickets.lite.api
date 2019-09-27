@@ -1,4 +1,5 @@
 const TYPES = {
+    AuthContext: Symbol.for('AuthContext'),
     Context: Symbol.for('Context'),
     AuthService: Symbol.for('AuthService'),
     UserService: Symbol.for('UserService'),

@@ -17,7 +17,7 @@ export class MongoDBConnection {
     
       private static connect(result: (error, db: Db) => void) {
         MongoClient.connect(config.connectionString, (err, client) => {
-          this.db = client.db(config.dbName);
+          this.db = client.db(config.configurationDatabase);
           this.isConnected = true;
           return result(err, this.db);
         });

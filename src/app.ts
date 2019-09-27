@@ -23,6 +23,7 @@ import { TicketService } from './services/ticket.service';
 import { InventoryService } from './services/inventory.service';
 import { Context } from './context/context';
 import { AuthProvider } from './utils/authentication/auth-provider';
+import { AuthContext } from './context/auth-context';
 
 // set up container
 let container = new Container();
@@ -33,6 +34,8 @@ container.bind<AuthService>(TYPES.AuthService).to(AuthService);
 container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<TicketService>(TYPES.TicketService).to(TicketService);
 container.bind<InventoryService>(TYPES.InventoryService).to(InventoryService);
+
+container.bind<AuthContext>(TYPES.AuthContext).to(AuthContext);
 
 container.bind<Context>(TYPES.Context).toDynamicValue((ctx) => {
   const httpContext = ctx.container.get<interfaces.HttpContext>(TYPE.HttpContext);

@@ -6,13 +6,16 @@ import { User } from '../models/user';
 import * as config from '../config.json';
 import { Context } from '../context/context';
 import TYPES from '../constant/types';
+import { AuthContext } from '../context/auth-context';
+import { MasterConfiguration } from '../models/master-configuration';
 
 
 @injectable()
 export class AuthService {
-    constructor(@inject(TYPES.Context) private context: Context) { }
+    constructor(@inject(TYPES.AuthContext) private authContext: AuthContext, @inject(TYPES.Context) private context: Context) { }
 
     public async authenticate(username: string, password: string, site: string) {
+        this.authContext.MasterConfiguration;
         this.context.setSite(site);
         username = username.toLowerCase();
         let userIdentity = await this.context.UserIdentity.findOne({username: username});
@@ -38,5 +41,21 @@ export class AuthService {
         });
         
         return await this.context.User.create(user);       
+    }
+
+    public async isSiteTaken(site: string){
+        site = site.toLowerCase();
+        let config = await this.authContext.MasterConfiguration.find({site: site});
+        return await (config != null);
+    }
+
+    public async createConfiguration(configuration: MasterConfiguration, user: User, password: string){
+        if(!(await this.authContext.MasterConfiguration.find({site: configuration.site}))){
+            user = await this.create(user, password);
+            configuration.dbName = configuration.site;
+            return await this.authenticate(user.username, password, configuration.site);
+        } else {
+            throw "Workplace is taken";
+        }
     }
 }

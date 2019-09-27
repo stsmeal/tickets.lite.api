@@ -1,16 +1,3 @@
-/*
-export class User{
-    username: string;
-    firstname: string;
-    middlename: string;
-    lastname: string;
-    email: string;
-    dateCreated: Date;
-    role: string;
-    phone: string;
-    theme: string;
-}
-*/
 import {Schema, Document } from 'mongoose';
 
 export interface User extends Document{

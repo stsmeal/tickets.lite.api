@@ -1,0 +1,42 @@
+import {Schema, Document } from 'mongoose';
+import AuditSchema, { Audit } from './audit';
+
+export interface MasterConfiguration extends Document, Audit{
+    site: string;
+    companyName: string;
+    description: string;
+    address1: string;
+    address2: string;
+    state: string;
+    zipcode: string;
+    country: string;
+    accountOwnerFirstName: string;
+    accountOwnerLastName: string;
+    accountOwnerEmail: string;
+    accountActive: boolean;
+    dbName: string;
+    server: string;
+    port: number;
+}
+
+const MasterConfigurationSchema = new Schema({
+    site: { type: String, required: true, unique: true },
+    companyName: { type: String },
+    description: { type: String },
+    address1: { type: String },
+    address2: { type: String },
+    state: { type: String },
+    zipcode: { type: String },
+    country: { type: String },
+    accountOwnerFirstName: { type: String },
+    accountOwnerLastName: { type: String },
+    accountOwnerEmail: { type: String },
+    accountActive: { type: Boolean },
+    dbName: { type: String },
+    server: { type: String },
+    port: { type: Number }
+});
+
+MasterConfigurationSchema.add(AuditSchema);
+
+export default MasterConfigurationSchema;

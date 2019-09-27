@@ -1,4 +1,4 @@
-import { controller, httpPost, httpGet, BaseHttpController, httpDelete } from 'inversify-express-utils';
+import { controller, httpPost, httpGet, BaseHttpController, httpDelete, requestBody } from 'inversify-express-utils';
 import { Request, Response } from 'express';
 import { inject } from 'inversify';
 import TYPES from '../constant/types';
@@ -73,5 +73,13 @@ export class AuthController extends BaseHttpController {
         } catch(error) {
             return this.internalServerError(error);
         }
+    }
+
+    @httpPost('/create')
+    public async createConfiguration(request: Request){
+        let configuration = request.body.configuration;
+        let {user, password} = request.body.user;
+
+        return await this.auth.createConfiguration(configuration, user, password);
     }
 }
