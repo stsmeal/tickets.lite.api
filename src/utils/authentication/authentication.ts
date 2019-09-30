@@ -6,7 +6,9 @@ export function jwt() {
     return expressJwt({secret, isRevoked }).unless({
         path:[
             '/auth/token',
-            '/auth/register'
+            '/auth/register',
+            '/auth/validsite',
+            '/auth/create'
         ]
     });
 }

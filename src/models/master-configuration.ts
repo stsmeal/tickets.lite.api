@@ -10,8 +10,8 @@ export interface MasterConfiguration extends Document, Audit{
     state: string;
     zipcode: string;
     country: string;
-    accountOwnerFirstName: string;
-    accountOwnerLastName: string;
+    accountOwnerFirstname: string;
+    accountOwnerLastname: string;
     accountOwnerEmail: string;
     accountActive: boolean;
     dbName: string;
@@ -28,8 +28,8 @@ const MasterConfigurationSchema = new Schema({
     state: { type: String },
     zipcode: { type: String },
     country: { type: String },
-    accountOwnerFirstName: { type: String },
-    accountOwnerLastName: { type: String },
+    accountOwnerFirstname: { type: String },
+    accountOwnerLastname: { type: String },
     accountOwnerEmail: { type: String },
     accountActive: { type: Boolean },
     dbName: { type: String },

@@ -43,19 +43,28 @@ export class AuthService {
         return await this.context.User.create(user);       
     }
 
-    public async isSiteTaken(site: string){
+    public async isSiteNotTaken(site: string){
         site = site.toLowerCase();
         let config = await this.authContext.MasterConfiguration.find({site: site});
         return await (config != null);
     }
 
     public async createConfiguration(configuration: MasterConfiguration, user: User, password: string){
-        if(!(await this.authContext.MasterConfiguration.find({site: configuration.site}))){
+        if((await this.isSiteNotTaken(configuration.site))){
             user = await this.create(user, password);
             configuration.dbName = configuration.site;
+            await this.createConstants(configuration.site);
+            await this.authContext.MasterConfiguration.create(configuration);
             return await this.authenticate(user.username, password, configuration.site);
         } else {
             throw "Workplace is taken";
         }
+    }
+
+    private async createConstants(site: string){
+        this.context.setSite(site);
+        await this.context.Counter.create({name: 'inventory', count: 1});
+        await this.context.Counter.create({name: 'tickets', count: 1});
+        return await true;
     }
 }

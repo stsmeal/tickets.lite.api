@@ -75,11 +75,25 @@ export class AuthController extends BaseHttpController {
         }
     }
 
+    @httpPost('/validsite')
+    public async validate(request: Request){
+        let site = request.body.site;
+        return await this.auth.isSiteNotTaken(site);
+    }
+
     @httpPost('/create')
     public async createConfiguration(request: Request){
         let configuration = request.body.configuration;
-        let {user, password} = request.body.user;
+        let {password, ..._user} = request.body.user;
+        let user = {..._user};
 
-        return await this.auth.createConfiguration(configuration, user, password);
+        if(!user.site || !configuration.site){
+            throw "Site Required";
+        }
+
+        user.site = user.site.toLowerCase();
+        configuration.site = configuration.site.toLowerCase();
+
+        return await this.auth.createConfiguration(configuration, {...user}, password);
     }
 }
