@@ -19,15 +19,8 @@ export class TicketService {
 
     public async saveTicket(ticket: Ticket){
         if(!ticket._id || !ticket.number){
-            let counter: Counter = await this.context.Counter.findOne({name: 'tickets'}).exec();
-            if(!counter){
-                ticket.number = 1;
-                await this.context.Counter.create({name: 'tickets', count: 1});
-            } else {
-                counter.count += 1;
-                ticket.number = counter.count;
-                await this.context.Counter.findOneAndUpdate({name: 'tickets'}, {count: counter.count});
-            }
+            let counter: Counter = await this.context.Counter.findOneAndUpdate({name: 'tickets'}, {$inc: {count: 1}});
+            ticket.number = counter.count;
         }
 
         //handle labor charges

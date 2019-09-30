@@ -18,15 +18,8 @@ export class InventoryService {
 
     public async saveAsset(asset: Asset){
         if(!asset._id && !asset.number){
-            let counter: Counter = await this.context.Counter.findOne({name: 'inventory'});
-            if(!counter){
-                asset.number = "1";
-                await this.context.Counter.create({name: 'inventory', count: 1});
-            } else {
-                counter.count += 1;
-                asset.number = counter.count.toString();
-                await this.context.Counter.findOneAndUpdate({name: 'inventory'}, {count: counter.count});
-            }
+            let counter: Counter = await this.context.Counter.findOneAndUpdate({name: 'inventory'}, {$inc: {count: 1}});
+            asset.number = counter.count.toString();
         }
 
         if(!asset._id){
