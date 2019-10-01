@@ -4,6 +4,7 @@ import { inject } from 'inversify';
 import TYPES from '../constant/types';
 import { User } from '../models/user';
 import { AuthService } from '../services/auth.service';
+import * as config from '../config.json';
 
 @controller('/auth')
 export class AuthController extends BaseHttpController {
@@ -78,6 +79,9 @@ export class AuthController extends BaseHttpController {
     @httpPost('/validsite')
     public async validate(request: Request){
         let site = request.body.site;
+        if(request.body.site.toLowerCase() == config.configurationDatabase.toLowerCase()){
+            throw "Invalid Site Name"
+        }
         return await this.auth.isSiteNotTaken(site);
     }
 
@@ -91,7 +95,7 @@ export class AuthController extends BaseHttpController {
             throw "Site Required";
         }
 
-        if(!/^([A-Z]+\-{0,1}[a-z]+)+$/i.test(configuration.site)){
+        if(!/^([A-Z]+\-{0,1}[a-z]+)+$/i.test(configuration.site) || request.body.site.toLowerCase() == config.configurationDatabase.toLowerCase()){
             throw "Invalid Site Name";
         }
 
