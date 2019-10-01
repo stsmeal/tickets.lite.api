@@ -34,4 +34,10 @@ export class TicketController extends BaseHttpController {
 
         return await this.ticketService.deleteTicket(id);
     }
+
+    @httpPost('/query')
+    public async query(request: Request){
+        let query = request.body;
+        return await this.ticketService.query(query);
+    }
 }

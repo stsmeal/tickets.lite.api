@@ -3,6 +3,7 @@ import TYPES from '../constant/types';
 import { Asset } from '../models/asset';
 import { Counter } from '../models/counter';
 import { Context } from '../context/context';
+import { QueryCriteria } from '../models/query';
 
 
 @injectable()
@@ -44,5 +45,16 @@ export class InventoryService {
         let assets = await this.context.Asset.find({_id: {$in: aggregate}}).sort({number: 1, description: 1});
 
         return await assets;
+    }
+
+    
+    public async query(queryCriteria: QueryCriteria) {
+        let filter = (queryCriteria.filter)? queryCriteria.filter : {};
+        let direction = (queryCriteria.sortDirection == "desc")? -1: 1;
+        let sort = (queryCriteria.sortColumn && queryCriteria.sortDirection)? { [queryCriteria.sortColumn]: direction} : {};
+        let data = { total: 0, items: []};
+        data.total = await this.context.Asset.find(filter).count();
+        data.items = await this.context.Asset.find(filter).sort(sort).skip(queryCriteria.page * queryCriteria.pageSize).limit(queryCriteria.pageSize);
+        return await data;
     }
 }

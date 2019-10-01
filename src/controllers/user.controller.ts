@@ -116,4 +116,10 @@ export class UserController extends BaseHttpController {
     public async delete(request: Request){
         return await this.userService.delete(request.params.id);
     }
+
+    @httpPost('/query')
+    public async query(request: Request){
+        let query = request.body;
+        return await this.userService.query(query);
+    }
 }

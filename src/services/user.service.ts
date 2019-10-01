@@ -4,6 +4,7 @@ import { hash } from 'bcryptjs';
 import { UserIdentity } from '../models/user-identity';
 import { User } from '../models/user';
 import { Context } from '../context/context';
+import { QueryCriteria } from '../models/query';
 
 
 @injectable()
@@ -73,5 +74,15 @@ export class UserService {
     
     public async getTickets(userId: string){
         return await this.context.Ticket.find({assignments: { $all: [userId]}}).sort({dateCreated: -1});
+    }
+
+    public async query(queryCriteria: QueryCriteria) {
+        let filter = (queryCriteria.filter)? queryCriteria.filter : {};
+        let direction = (queryCriteria.sortDirection == "desc")? -1: 1;
+        let sort = (queryCriteria.sortColumn && queryCriteria.sortDirection)? { [queryCriteria.sortColumn]: direction} : {};
+        let data = { total: 0, items: []};
+        data.total = await this.context.User.find(filter).count();
+        data.items = await this.context.User.find(filter).sort(sort).skip(queryCriteria.page * queryCriteria.pageSize).limit(queryCriteria.pageSize);
+        return await data;
     }
 }

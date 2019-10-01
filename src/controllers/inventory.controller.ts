@@ -41,4 +41,10 @@ export class InventoryController extends BaseHttpController {
 
         return await this.inventoryService.quickSearch(searchText);
     }
+
+    @httpPost('/query')
+    public async query(request: Request){
+        let query = request.body;
+        return await this.inventoryService.query(query);
+    }
 }
