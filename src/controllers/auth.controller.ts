@@ -91,6 +91,10 @@ export class AuthController extends BaseHttpController {
             throw "Site Required";
         }
 
+        if(!/^([A-Z]+\-{0,1}[a-z]+)+$/i.test(configuration.site)){
+            throw "Invalid Site Name";
+        }
+
         user.site = user.site.toLowerCase();
         configuration.site = configuration.site.toLowerCase();
 
