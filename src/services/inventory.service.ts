@@ -4,11 +4,12 @@ import { Asset } from '../models/asset';
 import { Counter } from '../models/counter';
 import { Context } from '../context/context';
 import { QueryCriteria } from '../models/query';
+import { UserProvider } from '../providers/user-provider';
 
 
 @injectable()
 export class InventoryService {
-    constructor(@inject(TYPES.Context) private context: Context){}
+    constructor(@inject(TYPES.Context) private context: Context, @inject(TYPES.UserProvider) private userProvider: UserProvider){}
     public async getAssets() {
         return await this.context.Asset.find({}).populate('userCreated').populate('userUpdated');
     }
@@ -24,8 +25,14 @@ export class InventoryService {
         }
 
         if(!asset._id){
+            asset.dateCreated = new Date();
+            asset.userCreated = this.userProvider.user;
+            asset.dateUpdated = new Date();
+            asset.userUpdated = this.userProvider.user;
             return await this.context.Asset.create(asset);
         } else {
+            asset.dateUpdated = new Date();
+            asset.userUpdated = this.userProvider.user;
             await this.context.Asset.findByIdAndUpdate(asset._id, asset);
             return await this.context.Asset.findById(asset._id).populate('userCreated').populate('userUpdated');
         }

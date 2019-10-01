@@ -40,6 +40,7 @@ export class AuthService {
             hash: await hash(password, 10)
         });
         
+        user.dateCreated = new Date();
         return await this.context.User.create(user);       
     }
 

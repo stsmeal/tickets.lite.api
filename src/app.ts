@@ -24,6 +24,7 @@ import { InventoryService } from './services/inventory.service';
 import { Context } from './context/context';
 import { AuthProvider } from './utils/authentication/auth-provider';
 import { AuthContext } from './context/auth-context';
+import { UserProvider } from './providers/user-provider';
 
 // set up container
 let container = new Container();
@@ -45,6 +46,18 @@ container.bind<Context>(TYPES.Context).toDynamicValue((ctx) => {
   }
   
   return context;
+}).inRequestScope();
+
+container.bind<UserProvider>(TYPES.UserProvider).toDynamicValue((ctx) => {
+  const httpContext = ctx.container.get<interfaces.HttpContext>(TYPE.HttpContext);
+  let userProvider = new UserProvider();
+  if(httpContext && httpContext.user && httpContext.user.details){
+    userProvider.user = httpContext.user.details;
+  } else {
+    userProvider.user = null;
+  }
+  
+  return userProvider;
 }).inRequestScope();
 
 //create server 

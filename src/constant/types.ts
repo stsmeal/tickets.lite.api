@@ -5,7 +5,8 @@ const TYPES = {
     UserService: Symbol.for('UserService'),
     TicketService: Symbol.for('TicketService'),
     InventoryService: Symbol.for('InventoryService'),
-    MongoDBClient: Symbol.for('MongoDBClient')
+    MongoDBClient: Symbol.for('MongoDBClient'),
+    UserProvider: Symbol.for('UserProvider')
 };
 
 export default TYPES;

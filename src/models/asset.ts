@@ -26,4 +26,6 @@ const AssetSchema = new Schema({
     retiredDate: {type: Date}
 });
 
+AssetSchema.add(AuditSchema);
+
 export default AssetSchema;

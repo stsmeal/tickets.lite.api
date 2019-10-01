@@ -5,11 +5,12 @@ import { Counter } from '../models/counter';
 import { Context } from '../context/context';
 import { QueryCriteria } from '../models/query';
 import { DocumentQuery } from 'mongoose';
+import { UserProvider } from '../providers/user-provider';
 
 
 @injectable()
 export class TicketService {
-    constructor(@inject(TYPES.Context) private context: Context) {}
+    constructor(@inject(TYPES.Context) private context: Context, @inject(TYPES.UserProvider) private userProvider: UserProvider) {}
 
     public async getTickets() {
         return await this.context.Ticket.find({});//.populate({path: 'assets', model: AssetSchema}).populate({path: 'assignments', model: User}).populate('userCreated').populate('userUpdated');
@@ -29,8 +30,14 @@ export class TicketService {
         if(ticket.laborCharges && ticket.laborCharges.length){
             for(let i = 0; i < ticket.laborCharges.length; i++){
                 if(!ticket.laborCharges[i]._id){
+                    ticket.laborCharges[i].dateCreated = new Date();
+                    ticket.laborCharges[i].userCreated = this.userProvider.user;
+                    ticket.laborCharges[i].dateUpdated = new Date();
+                    ticket.laborCharges[i].userUpdated = this.userProvider.user;
                     ticket.laborCharges[i] = await this.context.LaborCharge.create(ticket.laborCharges[i]);
                 } else {
+                    ticket.laborCharges[i].dateUpdated = new Date();
+                    ticket.laborCharges[i].userUpdated = this.userProvider.user;
                     await this.context.LaborCharge.findByIdAndUpdate(ticket.laborCharges[i]._id, ticket.laborCharges[i]);
                     ticket.laborCharges[i] = await this.context.LaborCharge.findById(ticket.laborCharges[i]._id);
                 }
@@ -48,8 +55,14 @@ export class TicketService {
         }
 
         if(!ticket._id){
+            ticket.dateCreated = new Date();
+            ticket.userCreated = this.userProvider.user;
+            ticket.dateUpdated = new Date();
+            ticket.userUpdated = this.userProvider.user;
             return await this.context.Ticket.create(ticket);
         } else {
+            ticket.dateUpdated = new Date();
+            ticket.userUpdated = this.userProvider.user;
             await this.context.Ticket.findByIdAndUpdate(ticket._id, ticket);
             return await this.context.Ticket.findById(ticket._id).populate({path: 'assets', model: this.context.Asset}).populate({path: 'laborCharges', model: this.context.LaborCharge, populate: {path: 'assignment', model: this.context.User}}).populate({path: 'assignments', model: this.context.User}).populate('userCreated').populate('userUpdated');
         }

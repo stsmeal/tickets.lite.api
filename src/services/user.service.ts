@@ -5,11 +5,12 @@ import { UserIdentity } from '../models/user-identity';
 import { User } from '../models/user';
 import { Context } from '../context/context';
 import { QueryCriteria } from '../models/query';
+import { UserProvider } from '../providers/user-provider';
 
 
 @injectable()
 export class UserService {
-    constructor(@inject(TYPES.Context) private context: Context) {}
+    constructor(@inject(TYPES.Context) private context: Context, @inject(TYPES.UserProvider) private userProvider: UserProvider) {}
 
     public async getAll() {
         return await this.context.User.find({});
@@ -30,6 +31,7 @@ export class UserService {
             hash: await hash(password, 10)
         });
         
+        user.dateCreated = new Date();
         return await this.context.User.create(user);       
     }
 
