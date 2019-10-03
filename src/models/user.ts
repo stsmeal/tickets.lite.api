@@ -1,4 +1,5 @@
 import {Schema, Document } from 'mongoose';
+import { Notification } from './notification';
 
 export interface User extends Document{
     username: string;
@@ -13,6 +14,7 @@ export interface User extends Document{
     role: string;
     phone: string;
     theme: string;
+    notifications: Notification[];
     deleted: boolean;
 }
 
@@ -29,6 +31,7 @@ const UserSchema = new Schema({
     role: {type: String},
     phone: {type: String},
     theme: {type: String},
+    noticifations: [{type: Object}],
     deleted: {type: Schema.Types.Boolean, default: false }
 });
 

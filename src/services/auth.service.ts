@@ -20,7 +20,7 @@ export class AuthService {
         username = username.toLowerCase();
         let userIdentity = await this.context.UserIdentity.findOne({username: username});
         if(userIdentity && await compare(password, userIdentity.hash)) {
-            let user = await this.context.User.findOne({username: username});
+            let user = await this.context.User.findOne({username: username}).select('-notifications');
             const token = sign(JSON.stringify(user), config.secret);
             return await {user, token}; 
         } else {
