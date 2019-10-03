@@ -46,7 +46,7 @@ export class InventoryService {
         let aggregate = (await this.context.Asset.aggregate([{
             $project: { fullname: { $concat: ["$number", " - ", "$description"]}}
         },{
-            $match: { fullname: new RegExp(`^${searchText}`, 'i')}
+            $match: { fullname: new RegExp(`${searchText}`, 'i')}
         }]).limit(25)).map(a => a._id);
 
         let assets = await this.context.Asset.find({_id: {$in: aggregate}}).sort({number: 1, description: 1});
