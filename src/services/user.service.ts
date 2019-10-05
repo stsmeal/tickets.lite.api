@@ -39,13 +39,15 @@ export class UserService {
         let oldUser = await this.context.User.findById(user._id);
         let userIdentity = await this.context.UserIdentity.findOne({username: oldUser.username});
 
+        user.notifications = oldUser.notifications;
+
         if(userIdentity.username != user.username.toLowerCase()){
             userIdentity.username = user.username;
             await this.context.UserIdentity.findByIdAndUpdate(userIdentity._id, userIdentity);;
         }
 
         await this.context.User.findByIdAndUpdate(user._id, user);
-        return await this.context.User.findById(user._id);
+        return await this.context.User.findById(user._id).select('-notifications');
     }
     
     public async delete(id: string) {
@@ -55,7 +57,7 @@ export class UserService {
         userIdentity.deleted = true;
         await this.context.UserIdentity.findByIdAndUpdate(userIdentity._id, userIdentity);;
 
-        return await this.context.User.findByIdAndUpdate(user._id, user);;
+        return await this.context.User.findByIdAndUpdate(user._id, user).select('-notifications');
     }
 
     public async quickSearch(searchText: string){

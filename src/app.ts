@@ -15,6 +15,7 @@ import './controllers/auth.controller';
 import './controllers/user.controller';
 import './controllers/ticket.controller';
 import './controllers/inventory.controller';
+import './controllers/notification.controller';
 import './utils/mongodb/client';
 
 import { AuthService } from './services/auth.service';
@@ -25,6 +26,7 @@ import { Context } from './context/context';
 import { AuthProvider } from './utils/authentication/auth-provider';
 import { AuthContext } from './context/auth-context';
 import { UserProvider } from './providers/user-provider';
+import { NotificationService } from './services/notification.service';
 
 // set up container
 let container = new Container();
@@ -35,6 +37,7 @@ container.bind<AuthService>(TYPES.AuthService).to(AuthService);
 container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<TicketService>(TYPES.TicketService).to(TicketService);
 container.bind<InventoryService>(TYPES.InventoryService).to(InventoryService);
+container.bind<NotificationService>(TYPES.NotificationService).to(NotificationService);
 
 container.bind<AuthContext>(TYPES.AuthContext).to(AuthContext);
 
