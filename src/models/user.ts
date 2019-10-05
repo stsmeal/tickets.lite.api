@@ -31,7 +31,7 @@ const UserSchema = new Schema({
     role: {type: String},
     phone: {type: String},
     theme: {type: String},
-    noticifations: [{type: Object}],
+    notifications: [{type: Object}],
     deleted: {type: Schema.Types.Boolean, default: false }
 });
 

@@ -1,4 +1,4 @@
-import { controller, httpPost, httpGet, BaseHttpController, httpDelete, requestBody } from 'inversify-express-utils';
+import { controller, httpPost, httpGet, BaseHttpController, httpDelete, requestBody, httpPut } from 'inversify-express-utils';
 import { Request } from 'express';
 import { inject } from 'inversify';
 import TYPES from '../constant/types';
@@ -14,13 +14,14 @@ export class NotificationController extends BaseHttpController {
         return await this.notificationService.getNotifications();
     }
 
-    @httpGet('/new')
-    public async newNotifications(){
-        return await this.notificationService.hasNewNotifications();
+    @httpGet('/unreadCount')
+    public async unreadNotificationsCount(){
+        let count = await this.notificationService.unreadNotificationsCount();
+        return this.ok(count);
     }
 
-    @httpPost('/update')
-    public async updateNotifications(@requestBody() notifications: Notification[]){
-        return await this.notificationService.updateNotifications(notifications);
+    @httpPut('/')
+    public async updateNotifications(@requestBody() notification: Notification){
+        return await this.notificationService.updateNotification(notification);
     }
 }

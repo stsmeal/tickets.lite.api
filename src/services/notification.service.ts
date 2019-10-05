@@ -19,24 +19,26 @@ export class NotificationService {
         }
     }
 
-    public async hasNewNotifications() {
+    public async unreadNotificationsCount() {
+        let count = 0;
         if(this.userProvider.user && this.userProvider.user._id){
             let user = await this.context.User.findById(this.userProvider.user._id).select('notifications');
             if(!user.notifications){
-                return false;
+                return await count;
             }
-            let ix = user.notifications.findIndex(n => !n.read);
-            return await ix > -1;
+            count = user.notifications.filter(n => !n.read).length || 0;
         }
-        else {
-            return await false;
-        }
+        return await count;
     }
 
-    public async updateNotifications(notifications: Notification[]) {
+    public async updateNotification(notification: Notification) {
         if(this.userProvider.user && this.userProvider.user._id){
-            await this.context.User.findOneAndUpdate({_id: this.userProvider.user._id}, {notifications: notifications});
             let user = await this.context.User.findById(this.userProvider.user._id).select('notifications');
+            let ix = user.notifications.findIndex(n => n.id == notification.id);
+            if(ix > -1){
+                user.notifications[ix] = notification;
+            }
+            await this.context.User.findOneAndUpdate({_id: this.userProvider.user._id}, {notifications: user.notifications});
             return await user.notifications;
         }
         else {
