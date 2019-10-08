@@ -85,8 +85,28 @@ export class UserService {
         let direction = (queryCriteria.sortDirection == "desc")? -1: 1;
         let sort = (queryCriteria.sortColumn && queryCriteria.sortDirection)? { [queryCriteria.sortColumn]: direction} : {};
         let data = { total: 0, items: []};
-        data.total = await this.context.User.find(filter).count();
-        data.items = await this.context.User.find(filter).sort(sort).skip(queryCriteria.page * queryCriteria.pageSize).limit(queryCriteria.pageSize);
+        let wildCardFilter = {};
+        if(queryCriteria.wildcardFilter){
+            let aggregate = (await this.context.Asset.aggregate([{
+                $project: { description: { 
+                    $concat: [
+                        "$username",
+                        " ",
+                        "$firstname",
+                        " ",
+                        "$lastname",
+                        " ",
+                        "$email",
+                    ]
+                }}
+            },{
+                $match: { description: new RegExp(`${queryCriteria.wildcardFilter}`, 'i')}
+            }])).map(a => a._id);
+
+            wildCardFilter = {_id: {$in: aggregate}};
+        }
+        data.total = await this.context.User.find(filter).find(wildCardFilter).count();
+        data.items = await this.context.User.find(filter).find(wildCardFilter).sort(sort).skip(queryCriteria.page * queryCriteria.pageSize).limit(queryCriteria.pageSize);
         return await data;
     }
 }

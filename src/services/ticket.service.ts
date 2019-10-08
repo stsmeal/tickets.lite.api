@@ -100,8 +100,27 @@ export class TicketService {
         let direction = (queryCriteria.sortDirection == "desc")? -1: 1;
         let sort = (queryCriteria.sortColumn && queryCriteria.sortDirection)? { [queryCriteria.sortColumn]: direction} : {};
         let data = { total: 0, items: []};
-        data.total = await this.context.Ticket.find(filter).count();
-        data.items = await this.context.Ticket.find(filter).sort(sort).skip(queryCriteria.page * queryCriteria.pageSize).limit(queryCriteria.pageSize);
+        let wildCardFilter = {};
+        if(queryCriteria.wildcardFilter){
+            let aggregate = (await this.context.Ticket.aggregate([{
+                $project: { description: { 
+                    $concat: [
+                        { 
+                            $substr: [ "$number", 0, -1]
+                        },
+                        " ",
+                        "$description"
+                    ]
+                }}
+            },{
+                $match: { description: new RegExp(`${queryCriteria.wildcardFilter}`, 'i')}
+            }])).map(a => a._id);
+
+            wildCardFilter = {_id: {$in: aggregate}};
+        }
+
+        data.total = await this.context.Ticket.find(filter).find(wildCardFilter).count();
+        data.items = await this.context.Ticket.find(filter).find(wildCardFilter).sort(sort).skip(queryCriteria.page * queryCriteria.pageSize).limit(queryCriteria.pageSize);
         return await data;
     }
 
@@ -246,6 +265,26 @@ export class TicketService {
         } else {
             return "";
         }
+    }
+
+    public async quickSearch(searchText: string){
+        let aggregate = (await this.context.Ticket.aggregate([{
+            $project: { description: { 
+                $concat: [
+                    { 
+                        $substr: [ "$number", 0, -1]
+                    },
+                    " ",
+                    "$description"
+                ]
+            }}
+        },{
+            $match: { description: new RegExp(`${searchText}`, 'i')}
+        }]).limit(25)).map(a => a._id);
+
+        let tickets = await this.context.Ticket.find({_id: {$in: aggregate}}).sort({number: 1, description: 1});
+
+        return await tickets;
     }
 
 
