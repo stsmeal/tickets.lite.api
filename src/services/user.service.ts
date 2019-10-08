@@ -87,7 +87,7 @@ export class UserService {
         let data = { total: 0, items: []};
         let wildCardFilter = {};
         if(queryCriteria.wildcardFilter){
-            let aggregate = (await this.context.Asset.aggregate([{
+            let aggregate = (await this.context.User.aggregate([{
                 $project: { description: { 
                     $concat: [
                         "$username",
