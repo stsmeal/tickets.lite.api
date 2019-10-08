@@ -13,71 +13,71 @@ export class UserService {
     constructor(@inject(TYPES.Context) private context: Context, @inject(TYPES.UserProvider) private userProvider: UserProvider) {}
 
     public async getAll() {
-        return await this.context.User.find({});
+        return await this.context.users.find({});
     }
 
     public async get(id: string) {
-        return await this.context.User.findById(id);
+        return await this.context.users.findById(id);
     }
 
     public async create(user: User, password: string) {
         user.username = user.username.toLowerCase();
-        if(await this.context.User.findOne({username: user.username})){
+        if(await this.context.users.findOne({username: user.username})){
             throw 'Username is Taken';
         }
 
-        await this.context.UserIdentity.create(<UserIdentity>{
+        await this.context.userIdentities.create(<UserIdentity>{
             username: user.username,
             hash: await hash(password, 10)
         });
         
         user.dateCreated = new Date();
-        return await this.context.User.create(user);       
+        return await this.context.users.create(user);       
     }
 
     public async update(user: User) {
-        let oldUser = await this.context.User.findById(user._id);
-        let userIdentity = await this.context.UserIdentity.findOne({username: oldUser.username});
+        let oldUser = await this.context.users.findById(user._id);
+        let userIdentity = await this.context.userIdentities.findOne({username: oldUser.username});
 
         user.notifications = oldUser.notifications;
 
         if(userIdentity.username != user.username.toLowerCase()){
             userIdentity.username = user.username;
-            await this.context.UserIdentity.findByIdAndUpdate(userIdentity._id, userIdentity);;
+            await this.context.userIdentities.findByIdAndUpdate(userIdentity._id, userIdentity);;
         }
 
-        await this.context.User.findByIdAndUpdate(user._id, user);
-        return await this.context.User.findById(user._id).select('-notifications');
+        await this.context.users.findByIdAndUpdate(user._id, user);
+        return await this.context.users.findById(user._id).select('-notifications');
     }
     
     public async delete(id: string) {
-        let user =  await this.context.User.findById(id);
-        let userIdentity = await this.context.UserIdentity.findOne({username: user.username});
+        let user =  await this.context.users.findById(id);
+        let userIdentity = await this.context.userIdentities.findOne({username: user.username});
         user.deleted = true;
         userIdentity.deleted = true;
-        await this.context.UserIdentity.findByIdAndUpdate(userIdentity._id, userIdentity);;
+        await this.context.userIdentities.findByIdAndUpdate(userIdentity._id, userIdentity);;
 
-        return await this.context.User.findByIdAndUpdate(user._id, user).select('-notifications');
+        return await this.context.users.findByIdAndUpdate(user._id, user).select('-notifications');
     }
 
     public async quickSearch(searchText: string){
-        let aggregate = (await this.context.User.aggregate([{
+        let aggregate = (await this.context.users.aggregate([{
             $project: { fullname: { $concat: ["$lastname", ", ", "$firstname"]}}
         },{
             $match: { fullname: new RegExp(`${searchText}`, 'i')}
         }]).limit(25)).map(u => u._id);
 
-        let users = await this.context.User.find({_id: {$in: aggregate}}).sort({lastname: 1, firstname: 1});
+        let users = await this.context.users.find({_id: {$in: aggregate}}).sort({lastname: 1, firstname: 1});
 
         return await users;
     }
 
     public async getLaborCharges(userId: string){
-        return await this.context.LaborCharge.find({assignment: userId}).sort({dateCreated: -1});
+        return await this.context.laborCharges.find({assignment: userId}).sort({dateCreated: -1});
     }
     
     public async getTickets(userId: string){
-        return await this.context.Ticket.find({assignments: { $all: [userId]}}).sort({dateCreated: -1});
+        return await this.context.tickets.find({assignments: { $all: [userId]}}).sort({dateCreated: -1});
     }
 
     public async query(queryCriteria: QueryCriteria) {
@@ -87,7 +87,7 @@ export class UserService {
         let data = { total: 0, items: []};
         let wildCardFilter = {};
         if(queryCriteria.wildcardFilter){
-            let aggregate = (await this.context.User.aggregate([{
+            let aggregate = (await this.context.users.aggregate([{
                 $project: { description: { 
                     $concat: [
                         "$username",
@@ -105,8 +105,8 @@ export class UserService {
 
             wildCardFilter = {_id: {$in: aggregate}};
         }
-        data.total = await this.context.User.find(filter).find(wildCardFilter).count();
-        data.items = await this.context.User.find(filter).find(wildCardFilter).sort(sort).skip(queryCriteria.page * queryCriteria.pageSize).limit(queryCriteria.pageSize);
+        data.total = await this.context.users.find(filter).find(wildCardFilter).count();
+        data.items = await this.context.users.find(filter).find(wildCardFilter).sort(sort).skip(queryCriteria.page * queryCriteria.pageSize).limit(queryCriteria.pageSize);
         return await data;
     }
 }

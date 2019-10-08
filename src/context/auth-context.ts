@@ -8,8 +8,8 @@ import MasterEmailSchema, { MasterEmail } from "../models/master-email.js";
 @injectable()
 export class AuthContext {
     public connection: Connection;
-    public MasterConfiguration: Model<MasterConfiguration, {}>;
-    public MasterEmail: Model<MasterEmail, {}>;
+    public masterConfigurations: Model<MasterConfiguration, {}>;
+    public masterEmails: Model<MasterEmail, {}>;
 
 
     constructor(){ 
@@ -18,7 +18,7 @@ export class AuthContext {
     }
 
     private setModels(): void {
-        this.MasterConfiguration = this.connection.model<MasterConfiguration>('MasterConfiguration', MasterConfigurationSchema, 'masterConfigurations');
-        this.MasterEmail = this.connection.model<MasterEmail>('MasterEmail', MasterEmailSchema, 'masterEmails');
+        this.masterConfigurations = this.connection.model<MasterConfiguration>('MasterConfiguration', MasterConfigurationSchema, 'masterConfigurations');
+        this.masterEmails = this.connection.model<MasterEmail>('MasterEmail', MasterEmailSchema, 'masterEmails');
     }
 }

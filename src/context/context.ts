@@ -10,12 +10,12 @@ import { injectable } from "inversify";
 @injectable()
 export class Context {
     public connection: Connection;
-    public User: Model<User, {}>;
-    public UserIdentity: Model<UserIdentity, {}>;
-    public Ticket: Model<Ticket, {}>;
-    public LaborCharge: Model<LaborCharge, {}>;
-    public Counter: Model<Counter, {}>;
-    public Asset: Model<Asset, {}>;
+    public users: Model<User, {}>;
+    public userIdentities: Model<UserIdentity, {}>;
+    public tickets: Model<Ticket, {}>;
+    public laborCharges: Model<LaborCharge, {}>;
+    public counters: Model<Counter, {}>;
+    public inventory: Model<Asset, {}>;
 
 
     constructor(){ }
@@ -26,11 +26,11 @@ export class Context {
     }
 
     private setModels(): void {
-        this.User = this.connection.model<User>('User', UserSchema, 'users');
-        this.UserIdentity = this.connection.model<UserIdentity>("UserIdentity", UserIdentitySchema, "userIdentities");
-        this.Ticket = this.connection.model<Ticket>('Ticket', TicketSchema, 'tickets');
-        this.LaborCharge = this.connection.model<LaborCharge>('LaborCharge', LaborChargeSchema, 'laborCharges');
-        this.Counter = this.connection.model<Counter>('Counter', CounterSchema, 'counters');
-        this.Asset = this.connection.model<Asset>('Asset', AssetSchema, 'inventory');
+        this.users = this.connection.model<User>('User', UserSchema, 'users');
+        this.userIdentities = this.connection.model<UserIdentity>("UserIdentity", UserIdentitySchema, "userIdentities");
+        this.tickets = this.connection.model<Ticket>('Ticket', TicketSchema, 'tickets');
+        this.laborCharges = this.connection.model<LaborCharge>('LaborCharge', LaborChargeSchema, 'laborCharges');
+        this.counters = this.connection.model<Counter>('Counter', CounterSchema, 'counters');
+        this.inventory = this.connection.model<Asset>('Asset', AssetSchema, 'inventory');
     }
 }

@@ -11,7 +11,7 @@ export class NotificationService {
 
     public async getNotifications() {
         if(this.userProvider.user && this.userProvider.user._id){
-            let user = await this.context.User.findById(this.userProvider.user._id).select('notifications');
+            let user = await this.context.users.findById(this.userProvider.user._id).select('notifications');
             return await user.notifications;
         }
         else {
@@ -22,7 +22,7 @@ export class NotificationService {
     public async unreadNotificationsCount() {
         let count = 0;
         if(this.userProvider.user && this.userProvider.user._id){
-            let user = await this.context.User.findById(this.userProvider.user._id).select('notifications');
+            let user = await this.context.users.findById(this.userProvider.user._id).select('notifications');
             if(!user.notifications){
                 return await count;
             }
@@ -33,12 +33,12 @@ export class NotificationService {
 
     public async updateNotification(notification: Notification) {
         if(this.userProvider.user && this.userProvider.user._id){
-            let user = await this.context.User.findById(this.userProvider.user._id).select('notifications');
+            let user = await this.context.users.findById(this.userProvider.user._id).select('notifications');
             let ix = user.notifications.findIndex(n => n.id == notification.id);
             if(ix > -1){
                 user.notifications[ix] = notification;
             }
-            await this.context.User.findOneAndUpdate({_id: this.userProvider.user._id}, {notifications: user.notifications});
+            await this.context.users.findOneAndUpdate({_id: this.userProvider.user._id}, {notifications: user.notifications});
             return await user.notifications;
         }
         else {

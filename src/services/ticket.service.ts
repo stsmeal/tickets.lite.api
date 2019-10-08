@@ -32,16 +32,16 @@ export class TicketService {
     constructor(@inject(TYPES.Context) private context: Context, @inject(TYPES.UserProvider) private userProvider: UserProvider) {}
 
     public async getTickets() {
-        return await this.context.Ticket.find({});//.populate({path: 'assets', model: AssetSchema}).populate({path: 'assignments', model: User}).populate('userCreated').populate('userUpdated');
+        return await this.context.tickets.find({});//.populate({path: 'assets', model: AssetSchema}).populate({path: 'assignments', model: User}).populate('userCreated').populate('userUpdated');
     }
     
     public async getTicket(id: string){
-        return await this.context.Ticket.findById(id).populate({path: 'assets', model: this.context.Asset}).populate({path: 'laborCharges', model: this.context.LaborCharge, populate: {path: 'assignment', model: this.context.User}}).populate({path: 'assignments', model: this.context.User}).populate('userCreated').populate('userUpdated');
+        return await this.context.tickets.findById(id).populate({path: 'assets', model: this.context.inventory}).populate({path: 'laborCharges', model: this.context.laborCharges, populate: {path: 'assignment', model: this.context.users}}).populate({path: 'assignments', model: this.context.users}).populate('userCreated').populate('userUpdated');
     }
 
     public async saveTicket(ticket: Ticket){
         if(!ticket._id || !ticket.number){
-            let counter: Counter = await this.context.Counter.findOneAndUpdate({name: 'tickets'}, {$inc: {count: 1}});
+            let counter: Counter = await this.context.counters.findOneAndUpdate({name: 'tickets'}, {$inc: {count: 1}});
             ticket.number = counter.count;
         }
 
@@ -53,24 +53,24 @@ export class TicketService {
                     ticket.laborCharges[i].userCreated = this.userProvider.user;
                     ticket.laborCharges[i].dateUpdated = new Date();
                     ticket.laborCharges[i].userUpdated = this.userProvider.user;
-                    ticket.laborCharges[i] = await this.context.LaborCharge.create(ticket.laborCharges[i]);
+                    ticket.laborCharges[i] = await this.context.laborCharges.create(ticket.laborCharges[i]);
                 } else {
                     ticket.laborCharges[i].dateUpdated = new Date();
                     ticket.laborCharges[i].userUpdated = this.userProvider.user;
-                    await this.context.LaborCharge.findByIdAndUpdate(ticket.laborCharges[i]._id, ticket.laborCharges[i]);
-                    ticket.laborCharges[i] = await this.context.LaborCharge.findById(ticket.laborCharges[i]._id);
+                    await this.context.laborCharges.findByIdAndUpdate(ticket.laborCharges[i]._id, ticket.laborCharges[i]);
+                    ticket.laborCharges[i] = await this.context.laborCharges.findById(ticket.laborCharges[i]._id);
                 }
             } 
         }
         
         //delete old labor charges
         if(ticket._id){
-            let oldLaborCharges = (await this.context.Ticket.findById(ticket._id).select('laborCharges')).laborCharges
+            let oldLaborCharges = (await this.context.tickets.findById(ticket._id).select('laborCharges')).laborCharges
             .map(lc => lc._id)
             .filter(id => ticket.laborCharges.findIndex(lc => lc._id == id) == -1);
             
             if(oldLaborCharges.length)
-                await this.context.LaborCharge.find({_id: {$in: oldLaborCharges}}).update({deleted: true});
+                await this.context.laborCharges.find({_id: {$in: oldLaborCharges}}).update({deleted: true});
         }
 
         if(!ticket._id){
@@ -78,21 +78,21 @@ export class TicketService {
             ticket.userCreated = this.userProvider.user;
             ticket.dateUpdated = new Date();
             ticket.userUpdated = this.userProvider.user;
-            let newTicket = await this.context.Ticket.create(ticket);
+            let newTicket = await this.context.tickets.create(ticket);
             this.createNotifications(newTicket, <Ticket>{});
             return await newTicket;
         } else {
             ticket.dateUpdated = new Date();
             ticket.userUpdated = this.userProvider.user;
-            let oldTicket = await this.context.Ticket.findByIdAndUpdate(ticket._id, ticket).populate({path: 'assets', model: this.context.Asset}).populate({path: 'laborCharges', model: this.context.LaborCharge, populate: {path: 'assignment', model: this.context.User}}).populate({path: 'assignments', model: this.context.User}).populate('userCreated').populate('userUpdated');
-            let newTicket = await this.context.Ticket.findById(ticket._id).populate({path: 'assets', model: this.context.Asset}).populate({path: 'laborCharges', model: this.context.LaborCharge, populate: {path: 'assignment', model: this.context.User}}).populate({path: 'assignments', model: this.context.User}).populate('userCreated').populate('userUpdated');
+            let oldTicket = await this.context.tickets.findByIdAndUpdate(ticket._id, ticket).populate({path: 'assets', model: this.context.inventory}).populate({path: 'laborCharges', model: this.context.laborCharges, populate: {path: 'assignment', model: this.context.users}}).populate({path: 'assignments', model: this.context.users}).populate('userCreated').populate('userUpdated');
+            let newTicket = await this.context.tickets.findById(ticket._id).populate({path: 'assets', model: this.context.inventory}).populate({path: 'laborCharges', model: this.context.laborCharges, populate: {path: 'assignment', model: this.context.users}}).populate({path: 'assignments', model: this.context.users}).populate('userCreated').populate('userUpdated');
             this.createNotifications(newTicket, oldTicket);
             return await newTicket;
         }
     }
 
     public async deleteTicket(id: string){
-        return await this.context.Ticket.findByIdAndUpdate(id, {deleted: true});
+        return await this.context.tickets.findByIdAndUpdate(id, {deleted: true});
     }
 
     public async query(queryCriteria: QueryCriteria) {
@@ -102,7 +102,7 @@ export class TicketService {
         let data = { total: 0, items: []};
         let wildCardFilter = {};
         if(queryCriteria.wildcardFilter){
-            let aggregate = (await this.context.Ticket.aggregate([{
+            let aggregate = (await this.context.tickets.aggregate([{
                 $project: { description: { 
                     $concat: [
                         { 
@@ -119,8 +119,8 @@ export class TicketService {
             wildCardFilter = {_id: {$in: aggregate}};
         }
 
-        data.total = await this.context.Ticket.find(filter).find(wildCardFilter).count();
-        data.items = await this.context.Ticket.find(filter).find(wildCardFilter).sort(sort).skip(queryCriteria.page * queryCriteria.pageSize).limit(queryCriteria.pageSize);
+        data.total = await this.context.tickets.find(filter).find(wildCardFilter).count();
+        data.items = await this.context.tickets.find(filter).find(wildCardFilter).sort(sort).skip(queryCriteria.page * queryCriteria.pageSize).limit(queryCriteria.pageSize);
         return await data;
     }
 
@@ -239,7 +239,7 @@ export class TicketService {
                 }
             }
             notifications.forEach((notifications, id)=> {
-                this.context.User.findByIdAndUpdate(id, { $push:{
+                this.context.users.findByIdAndUpdate(id, { $push:{
                     notifications: {
                         $each: notifications,
                         $sort: {dateCreated: -1}
@@ -268,7 +268,7 @@ export class TicketService {
     }
 
     public async quickSearch(searchText: string){
-        let aggregate = (await this.context.Ticket.aggregate([{
+        let aggregate = (await this.context.tickets.aggregate([{
             $project: { description: { 
                 $concat: [
                     { 
@@ -282,7 +282,7 @@ export class TicketService {
             $match: { description: new RegExp(`${searchText}`, 'i')}
         }]).limit(25)).map(a => a._id);
 
-        let tickets = await this.context.Ticket.find({_id: {$in: aggregate}}).sort({number: 1, description: 1});
+        let tickets = await this.context.tickets.find({_id: {$in: aggregate}}).sort({number: 1, description: 1});
 
         return await tickets;
     }
