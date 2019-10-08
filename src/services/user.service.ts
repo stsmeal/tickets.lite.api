@@ -6,6 +6,7 @@ import { User } from '../models/user';
 import { Context } from '../context/context';
 import { QueryCriteria } from '../models/query';
 import { UserProvider } from '../providers/user-provider';
+import { GetRegExp } from '../utils/helpers';
 
 
 @injectable()
@@ -64,7 +65,7 @@ export class UserService {
         let aggregate = (await this.context.users.aggregate([{
             $project: { fullname: { $concat: ["$lastname", ", ", "$firstname"]}}
         },{
-            $match: { fullname: new RegExp(`${searchText}`, 'i')}
+            $match: { fullname: GetRegExp(searchText)}
         }]).limit(25)).map(u => u._id);
 
         let users = await this.context.users.find({_id: {$in: aggregate}}).sort({lastname: 1, firstname: 1});
@@ -100,7 +101,7 @@ export class UserService {
                     ]
                 }}
             },{
-                $match: { description: new RegExp(`${queryCriteria.wildcardFilter}`, 'i')}
+                $match: { description: GetRegExp(queryCriteria.wildcardFilter)}
             }])).map(a => a._id);
 
             wildCardFilter = {_id: {$in: aggregate}};

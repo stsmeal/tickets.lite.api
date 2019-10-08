@@ -9,6 +9,7 @@ import { UserProvider } from '../providers/user-provider';
 import { Watch, WatchType } from '../models/watch';
 import { Notification, NotificationData, NotificationType } from '../models/notification';
 import { ObjectID } from 'bson';
+import { GetRegExp } from '../utils/helpers';
 
 
 @injectable()
@@ -113,7 +114,7 @@ export class TicketService {
                     ]
                 }}
             },{
-                $match: { description: new RegExp(`${queryCriteria.wildcardFilter}`, 'i')}
+                $match: { description: GetRegExp(queryCriteria.wildcardFilter)}
             }])).map(a => a._id);
 
             wildCardFilter = {_id: {$in: aggregate}};
@@ -279,7 +280,7 @@ export class TicketService {
                 ]
             }}
         },{
-            $match: { description: new RegExp(`${searchText}`, 'i')}
+            $match: { description: GetRegExp(searchText)}
         }]).limit(25)).map(a => a._id);
 
         let tickets = await this.context.tickets.find({_id: {$in: aggregate}}).sort({number: 1, description: 1});

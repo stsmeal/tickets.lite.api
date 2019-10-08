@@ -5,6 +5,7 @@ import { Counter } from '../models/counter';
 import { Context } from '../context/context';
 import { QueryCriteria } from '../models/query';
 import { UserProvider } from '../providers/user-provider';
+import { GetRegExp } from '../utils/helpers';
 
 
 @injectable()
@@ -46,7 +47,7 @@ export class InventoryService {
         let aggregate = (await this.context.inventory.aggregate([{
             $project: { fullname: { $concat: ["$number", " - ", "$description"]}}
         },{
-            $match: { fullname: new RegExp(`${searchText}`, 'i')}
+            $match: { fullname: GetRegExp(searchText)}
         }]).limit(25)).map(a => a._id);
 
         let assets = await this.context.inventory.find({_id: {$in: aggregate}}).sort({number: 1, description: 1});
@@ -71,7 +72,7 @@ export class InventoryService {
                     ]
                 }}
             },{
-                $match: { description: new RegExp(`${queryCriteria.wildcardFilter}`, 'i')}
+                $match: { description: GetRegExp(queryCriteria.wildcardFilter)}
             }])).map(a => a._id);
 
             wildCardFilter = {_id: {$in: aggregate}};
