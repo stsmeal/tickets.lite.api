@@ -1,0 +1,16 @@
+version: '3'
+services:
+  mongodb:
+     image: mongo
+     container_name: cms_lite_mongo
+     restart: always
+     ports:
+       - "5001:27017"
+  cmsliteapi:
+    image: api:latest
+    depends_on:
+       - mongodb
+    container_name: cms_lite_api
+    restart: always
+    ports:
+      - "5000:3000"
