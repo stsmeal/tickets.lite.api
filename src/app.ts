@@ -69,9 +69,10 @@ server.setConfig((app) => {
   app.use(cors());
   //add body parser
   app.use(bodyParser.urlencoded({
-    extended: true
+    extended: true,
+    limit: '50mb'
   }));
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({ limit: '50mb' }));
   app.use(jwt());
   app.use(compression());
 });
