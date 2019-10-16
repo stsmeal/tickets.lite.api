@@ -30,7 +30,7 @@ export class AuthProvider implements interfaces.AuthProvider {
     ): Promise<interfaces.Principal> {
         const auth = (req.headers["authorization"] || "").toString().split(' ') || "";
         let user = null;
-        if(auth && auth.length == 2){
+        if(auth && auth.length == 2 && auth[1]){
             user = verify(auth[1], config.secret);
         }
 
