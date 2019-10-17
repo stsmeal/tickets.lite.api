@@ -7,7 +7,7 @@ import * as config from '../config.json';
 import { Context } from '../context/context';
 import TYPES from '../constant/types';
 import { AuthContext } from '../context/auth-context';
-import { MasterConfiguration } from '../models/master-configuration';
+import { Tenant } from '../models/tenant';
 
 
 @injectable()
@@ -15,7 +15,6 @@ export class AuthService {
     constructor(@inject(TYPES.AuthContext) private authContext: AuthContext, @inject(TYPES.Context) private context: Context) { }
 
     public async authenticate(username: string, password: string, site: string) {
-        this.authContext.masterConfigurations;
         this.context.setSite(site);
         username = username.toLowerCase();
         let userIdentity = await this.context.userIdentities.findOne({username: username});
@@ -46,17 +45,17 @@ export class AuthService {
 
     public async isSiteNotTaken(site: string){
         site = site.toLowerCase();
-        let config = await this.authContext.masterConfigurations.find({site: site});
+        let config = await this.authContext.tenants.find({site: site});
         return await (config != null);
     }
 
-    public async createConfiguration(configuration: MasterConfiguration, user: User, password: string){
-        if((await this.isSiteNotTaken(configuration.site))){
+    public async createConfiguration(tenant: Tenant, user: User, password: string){
+        if((await this.isSiteNotTaken(tenant.site))){
             user = await this.create(user, password);
-            configuration.dbName = configuration.site;
-            await this.createConstants(configuration.site);
-            await this.authContext.masterConfigurations.create(configuration);
-            return await this.authenticate(user.username, password, configuration.site);
+            tenant.dbName = tenant.site;
+            await this.createConstants(tenant.site);
+            await this.authContext.tenants.create(tenant);
+            return await this.authenticate(user.username, password, tenant.site);
         } else {
             throw "Workplace is taken";
         }

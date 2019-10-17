@@ -1,7 +1,7 @@
 import {Schema, Document } from 'mongoose';
 import AuditSchema, { Audit } from './audit';
 
-export interface MasterConfiguration extends Document, Audit{
+export interface Tenant extends Document, Audit{
     site: string;
     companyName: string;
     description: string;
@@ -19,7 +19,7 @@ export interface MasterConfiguration extends Document, Audit{
     port: number;
 }
 
-const MasterConfigurationSchema = new Schema({
+const TenantSchema = new Schema({
     site: { type: String, required: true, unique: true },
     companyName: { type: String },
     description: { type: String },
@@ -37,6 +37,6 @@ const MasterConfigurationSchema = new Schema({
     port: { type: Number }
 });
 
-MasterConfigurationSchema.add(AuditSchema);
+TenantSchema.add(AuditSchema);
 
-export default MasterConfigurationSchema;
+export default TenantSchema;
