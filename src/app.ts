@@ -15,6 +15,7 @@ import './controllers/auth.controller';
 import './controllers/user.controller';
 import './controllers/ticket.controller';
 import './controllers/inventory.controller';
+import './controllers/tenant.controller';
 import './controllers/notification.controller';
 import './utils/mongodb/client';
 
@@ -22,6 +23,7 @@ import { AuthService } from './services/auth.service';
 import { UserService } from './services/user.service';
 import { TicketService } from './services/ticket.service';
 import { InventoryService } from './services/inventory.service';
+import { TenantService } from './services/tenant.service';
 import { Context } from './context/context';
 import { AuthProvider } from './utils/authentication/auth-provider';
 import { AuthContext } from './context/auth-context';
@@ -37,6 +39,7 @@ container.bind<AuthService>(TYPES.AuthService).to(AuthService);
 container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<TicketService>(TYPES.TicketService).to(TicketService);
 container.bind<InventoryService>(TYPES.InventoryService).to(InventoryService);
+container.bind<TenantService>(TYPES.TenantService).to(TenantService);
 container.bind<NotificationService>(TYPES.NotificationService).to(NotificationService);
 
 container.bind<AuthContext>(TYPES.AuthContext).to(AuthContext);

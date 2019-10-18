@@ -5,6 +5,7 @@ const TYPES = {
     UserService: Symbol.for('UserService'),
     TicketService: Symbol.for('TicketService'),
     InventoryService: Symbol.for('InventoryService'),
+    TenantService: Symbol.for('TenantService'),
     NotificationService: Symbol.for('NotificationService'),
     MongoDBClient: Symbol.for('MongoDBClient'),
     UserProvider: Symbol.for('UserProvider')

@@ -21,7 +21,11 @@ export class AuthService {
         if(userIdentity && await compare(password, userIdentity.hash)) {
             let user = await this.context.users.findOne({username: username}).select('-notifications');
             const token = sign(JSON.stringify(user), config.secret);
-            return await {user, token}; 
+            if(site == config.configurationDatabase){
+                return {user, token, isAdmin: true };
+            } else {
+                return await {user, token}; 
+            }
         } else {
             throw 'Incorrect Username or Password';
         }
@@ -53,6 +57,8 @@ export class AuthService {
         if((await this.isSiteNotTaken(tenant.site))){
             user = await this.create(user, password);
             tenant.dbName = tenant.site;
+            tenant.dateCreated = new Date();
+            tenant.dateUpdated = new Date();
             await this.createConstants(tenant.site);
             await this.authContext.tenants.create(tenant);
             return await this.authenticate(user.username, password, tenant.site);
