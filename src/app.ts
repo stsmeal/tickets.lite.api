@@ -29,6 +29,7 @@ import { AuthProvider } from './utils/authentication/auth-provider';
 import { AuthContext } from './context/auth-context';
 import { UserProvider } from './providers/user-provider';
 import { NotificationService } from './services/notification.service';
+import { ApiRequest } from './models/api-request';
 
 // set up container
 let container = new Container();
@@ -49,6 +50,20 @@ container.bind<Context>(TYPES.Context).toDynamicValue((ctx) => {
   let context = new Context();
   if(httpContext && httpContext.user && httpContext.user.details){
     context.setSite(httpContext.user.details.site.toLowerCase());
+    let r: any = httpContext.request;
+    let req = {
+      headers: r.headers,
+      body: JSON.stringify(r.body),
+      url: r.url,
+      ip: r.ip,
+      protocol: r.protocol,
+      httpVersion: r.httpVersion,
+      user: r.user,
+      path: r.path,
+      method: r.method,
+      dateCreated: new Date()
+    };
+    context.apiRequests.create(req).then().catch((error) => console.log(error));
   }
   
   return context;

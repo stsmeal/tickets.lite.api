@@ -8,6 +8,7 @@ import { Context } from '../context/context';
 import TYPES from '../constant/types';
 import { AuthContext } from '../context/auth-context';
 import { Tenant } from '../models/tenant';
+import { LoginAudit } from '../models/login-audit';
 
 
 @injectable()
@@ -21,6 +22,7 @@ export class AuthService {
         if(userIdentity && await compare(password, userIdentity.hash)) {
             let user = await this.context.users.findOne({username: username}).select('-notifications');
             const token = sign(JSON.stringify(user), config.secret);
+            this.context.loginAudits.create(<LoginAudit>{user: user, time: new Date(), dateCreated: new Date()}).then().catch((error) => {console.log(error)});
             if(site == config.configurationDatabase){
                 return {user, token, isAdmin: true };
             } else {

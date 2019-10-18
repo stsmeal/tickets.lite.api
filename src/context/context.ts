@@ -6,6 +6,8 @@ import LaborChargeSchema, { LaborCharge } from "../models/labor-charge";
 import CounterSchema, { Counter } from "../models/counter";
 import AssetSchema, { Asset } from "../models/asset";
 import { injectable } from "inversify";
+import LoginAuditSchema, { LoginAudit } from "../models/login-audit";
+import ApiRequestSchema, { ApiRequest } from "../models/api-request";
 
 @injectable()
 export class Context {
@@ -16,6 +18,8 @@ export class Context {
     public laborCharges: Model<LaborCharge, {}>;
     public counters: Model<Counter, {}>;
     public inventory: Model<Asset, {}>;
+    public loginAudits: Model<LoginAudit, {}>;
+    public apiRequests: Model<ApiRequest, {}>;
 
 
     constructor(){ }
@@ -32,5 +36,7 @@ export class Context {
         this.laborCharges = this.connection.model<LaborCharge>('LaborCharge', LaborChargeSchema, 'laborCharges');
         this.counters = this.connection.model<Counter>('Counter', CounterSchema, 'counters');
         this.inventory = this.connection.model<Asset>('Asset', AssetSchema, 'inventory');
+        this.loginAudits = this.connection.model<LoginAudit>('LoginAudit', LoginAuditSchema, 'loginAudits');
+        this.apiRequests = this.connection.model<ApiRequest>('ApiRequest', ApiRequestSchema, 'apiRequests');
     }
 }
