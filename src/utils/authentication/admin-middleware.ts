@@ -8,7 +8,11 @@ function authMiddlewareFactory() {
         const auth = (req.headers["authorization"] || "").toString().split(' ') || "";
         let user: User = null;
         if(auth && auth.length == 2 && auth[1]){
-            user = <User>verify(auth[1], config.secret);
+            try{
+                user = <User>verify(auth[1], config.secret);
+            } catch(error){
+                console.log(error);
+            }
         }
         if (user == null || user.site != config.configurationDatabase) {
             res.status(403).json({ err: 'You are not allowed' });

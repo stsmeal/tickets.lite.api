@@ -31,7 +31,11 @@ export class AuthProvider implements interfaces.AuthProvider {
         const auth = (req.headers["authorization"] || "").toString().split(' ') || "";
         let user = null;
         if(auth && auth.length == 2 && auth[1]){
-            user = verify(auth[1], config.secret);
+            try{
+                user = verify(auth[1], config.secret);
+            } catch(error){
+                console.log(error);
+            }
         }
 
         return new Principal(user);
