@@ -6,7 +6,8 @@ import { UserProvider } from '../providers/user-provider';
 import { GetRegExp } from '../utils/helpers';
 import { AuthContext } from '../context/auth-context';
 import { Context } from '../context/context';
-import { Collection } from 'mongoose';
+import { NotificationData, Notification, NotificationType } from '../models/notification';
+import { ObjectID } from 'bson';
 
 
 @injectable()
@@ -153,5 +154,39 @@ export class TenantService {
         data.total = await this.auth.tenants.find(filter).find(wildCardFilter).count();
         data.items = await this.auth.tenants.find(filter).find(wildCardFilter).sort(sort).skip(queryCriteria.page * queryCriteria.pageSize).limit(queryCriteria.pageSize);
         return await data;
+    }
+
+    public async createNotifications(message: string, id: string){
+        let notification = <Notification>{
+            user: null,
+            id: new ObjectID().toHexString(),
+            dateCreated: new Date(),
+            read: false,
+            message: message,
+            data: <NotificationData>{
+                type: NotificationType.general,
+                name: 'Support'
+            }
+        }
+        if(id){
+            let tenant = await this.auth.tenants.findById(id);
+            if(tenant){
+                this.context.setSite(tenant.site);
+                this.context.users.updateMany({}, { $push:{
+                    notifications: { $each: [notification] }
+                }}).then().catch((error) => console.log(error));
+            }
+        } else {
+            let cursor = this.auth.tenants.find({}).cursor();
+            //Using a cursor to avoid loading too much into memory
+            for (let tenant = await cursor.next(); tenant != null; tenant = await cursor.next()) {
+              this.context.setSite(tenant.site);
+              this.context.users.updateMany({}, { $push:{
+                notifications: { $each: [notification] }
+              }}).then().catch((error) => console.log(error));
+            }
+        }
+
+        return await true;
     }
 }

@@ -37,6 +37,12 @@ export class TenantController extends BaseHttpController {
         return await this.tenantService.saveTenant(tenant);
     }
 
+    @httpPost('/notification')
+    public async sendNotification(request: Request) {
+        const {id, message }= request.body;
+        return await this.tenantService.createNotifications(message, id);
+    }
+
     @httpPost('/query')
     public async query(request: Request){
         let query = request.body;
