@@ -173,7 +173,10 @@ export class TenantService {
             if(tenant){
                 this.context.setSite(tenant.site);
                 this.context.users.updateMany({}, { $push:{
-                    notifications: { $each: [notification] }
+                    notifications: { 
+                        $each: [notification] ,
+                        $sort: {dateCreated: -1}
+                    }
                 }}).then().catch((error) => console.log(error));
             }
         } else {
@@ -182,7 +185,10 @@ export class TenantService {
             for (let tenant = await cursor.next(); tenant != null; tenant = await cursor.next()) {
               this.context.setSite(tenant.site);
               this.context.users.updateMany({}, { $push:{
-                notifications: { $each: [notification] }
+                notifications: { 
+                    $each: [notification],
+                    $sort: {dateCreated: -1}
+                 }
               }}).then().catch((error) => console.log(error));
             }
         }
