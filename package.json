@@ -1,7 +1,7 @@
 {
-  "name": "cms.lite.api",
+  "name": "tickets.lite.api",
   "version": "1.0.0",
-  "description": "CMS but lite",
+  "description": "Tickets but lite",
   "main": "app.js",
   "scripts": {
     "tsc": "tsc",

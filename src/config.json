@@ -1,6 +1,6 @@
 {
     "connectionString": "mongodb://localhost:27017",
-    "dbName": "cmslite",
+    "dbName": "ticketslite",
     "configurationDatabase": "site-admin",
     "secret": "chamberofsecrets"
 }
